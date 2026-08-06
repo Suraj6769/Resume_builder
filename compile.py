@@ -361,3 +361,12 @@ def compile_tex_string(latex_code_content, output_pdf_path="document.pdf", tex_f
             print(f"Error running local compiler: {e}")
             
     return False, "Failed to compile LaTeX to PDF."
+
+if __name__ == "__main__":
+    print("Reading base LaTeX template and compiling document.pdf...")
+    success, result = compile_tex_string(BASE_LATEX_CODE, "document.pdf", "document.tex")
+    if success:
+        print(f"Success! PDF created at: {result}")
+    else:
+        print(f"Compilation failed: {result}")
+
