@@ -1,0 +1,269 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot,
+    top=1.5 cm,
+    bottom=1.5 cm,
+    left=1.2 cm,
+    right=1.2 cm,
+    footskip=0.8 cm,
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={Suraj Vishwakarma - Quantitative Data Scientist Resume},
+    pdfauthor={Suraj Vishwakarma},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
+
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage{charter}
+
+\raggedright
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.1cm}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{-1pt}{0.2 cm}{0.15 cm}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.03 cm,
+        parsep=0.02 cm,
+        partopsep=0pt,
+        itemsep=0.02 cm,
+        leftmargin=0 cm + 8pt
+    ]
+}{
+    \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{0 cm + 0.00001 cm}{0 cm + 0.00001 cm}
+}{
+    \end{adjustwidth}
+}
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 3.5 cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
+    \endonecolentry
+}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.3}
+}{
+    \par\kern\topsep
+}
+
+\let\hrefWithoutArrow\href
+
+\begin{document}
+    \newcommand{\AND}{\unskip
+        \cleaders\copy\ANDbox\hskip\wd\ANDbox
+        \ignorespaces
+    }
+    \newsavebox\ANDbox
+    \sbox\ANDbox{$|$}
+
+    \begin{header}
+        \fontsize{22 pt}{22 pt}\selectfont Suraj Vishwakarma
+
+        \vspace{3 pt}
+
+        \normalsize
+        \mbox{Dombivli, Mumbai}%
+        \kern 4.0 pt%
+        \AND%
+        \kern 4.0 pt%
+        \mbox{\hrefWithoutArrow{mailto:svishwakarma9322@gmail.com}{svishwakarma9322@gmail.com}}%
+        \kern 4.0 pt%
+        \AND%
+        \kern 4.0 pt%
+        \mbox{\hrefWithoutArrow{tel:+91-9324316769}{+91 9324316769}}%
+        \kern 4.0 pt%
+        \AND%
+        \kern 4.0 pt%
+        \mbox{\hrefWithoutArrow{https://linkedin.com/in/surajvishwakarma11}{LinkedIn}}%
+        \kern 4.0 pt%
+        \AND%
+        \kern 4.0 pt%
+        \mbox{\hrefWithoutArrow{https://github.com/Suraj6769}{GitHub}}%
+    \end{header}
+
+    \vspace{3 pt - 0.3 cm}
+
+    \section{SUMMARY}
+    \begin{onecolentry}
+        Quantitative Data Scientist with a strong foundation in Statistics and Financial Risk Modeling. Experienced in building predictive models for loss estimation, customer behavior, and generative AI systems. Proficient in Python, SQL, and cloud platforms. Skilled in translating complex financial data into actionable business insights to drive revenue growth and mitigate risk.
+    \end{onecolentry}
+
+    \section{TECHNICAL SKILLS}
+    \begin{onecolentry}
+        \textbf{Domains:} Financial Risk Modeling, Predictive Analytics, NLP, LLMs, Quantitative Research, Credit Scoring, Time-Series Analysis.
+    \end{onecolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \textbf{Languages:} Python, R, SQL, SAS.
+    \end{onecolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \textbf{Libraries:} Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch, LangChain, Statsmodels, Hugging Face, Transformers.
+    \end{onecolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \textbf{Tools:} Power BI, Tableau, AWS, Streamlit, Git, RMS, AIR, CatRisk.
+    \end{onecolentry}
+
+    \section{PROFESSIONAL EXPERIENCE}
+
+    \begin{twocolentry}{May 2026 -- Present}
+        \textbf{AI Engineer}, PSS
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Leveraged GenAI to optimize recruitment finance, reducing manual screening costs by automating candidate shortlisting and data collection via robotic calls.
+            \item Built an LLM-based resume recommendation system, integrating internal databases with external Google results to source top-tier talent, improving hiring pipeline velocity by 20\%.
+            \item Developed an Agentic AI workflow to automate communication (Email/WhatsApp) and data collection, streamlining the end-to-end recruitment cycle and reducing administrative overhead by 30\%.
+            \item Integrated APIs (ChatGPT, Gemini, Claude) to generate structured reports and screening criteria, standardizing candidate evaluation metrics.
+        \end{highlights}
+    \end{onecolentry}
+
+    \vspace{0.06 cm}
+
+    \begin{twocolentry}{Feb 2025 -- Apr 2026}
+        \textbf{Risk Modeling Analyst}, Marsh McLennan (Internship)
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Architected end-to-end data science pipelines in Python (Pandas, NumPy) to automate the ingestion, cleaning, and standardization of exposure data for 125+ accounts, eliminating manual Excel workflows and boosting team productivity by 40\%.
+            \item Developed predictive machine learning models (XGBoost, GLM) to forecast aggregate loss costs, validating outputs against traditional RMS/AIR models to improve the accuracy of financial risk assessments by 12\% for underwriting portfolios.
+            \item Designed and deployed interactive dashboards (Power BI) to visualize critical financial risk metrics (AAL, PML, OEP, AEP), enabling senior stakeholders to monitor portfolio concentration and make data-driven reinsurance purchasing decisions 30\% faster.
+            \item Applied statistical modeling (Time-Series \& Regression) on historical claims data to identify emerging catastrophe risk drivers, directly influencing premium pricing strategies and optimizing capital allocation for the firm.
+        \end{highlights}
+    \end{onecolentry}
+
+    \vspace{0.06 cm}
+
+    \begin{twocolentry}{Jan 2025 -- Feb 2025}
+        \textbf{Junior GenAI Engineer}, Visulon Inc.
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Designed an NLP-to-SQL pipeline using Ollama LLMs, enabling business stakeholders to query financial databases using natural language, reducing reliance on technical teams and improving reporting speed by 40\%.
+            \item Fine-tuned and deployed Stable Diffusion models for rapid prototyping, optimizing GPU inference latency for real-time applications.
+        \end{highlights}
+    \end{onecolentry}
+
+    \section{ACADEMIC PROJECTS}
+
+    \begin{twocolentry}{2024}
+        \textbf{Credit Risk Modeling \& Loan Default Prediction}
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Built an end-to-end machine learning pipeline (XGBoost, Random Forest, Logistic Regression) to predict borrower default probability using synthetic banking datasets.
+            \item Applied advanced feature engineering (debt-to-income ratios, credit utilization) and handled severe class imbalance using SMOTE-ENN to minimize false negatives, which carry high financial costs for lenders.
+            \item \textbf{Impact:} Achieved an 89\% AUC-ROC, with the potential to reduce non-performing loan (NPL) ratios by 15\% through early identification of high-risk accounts.
+        \end{highlights}
+    \end{onecolentry}
+
+    \vspace{0.06 cm}
+
+    \begin{twocolentry}{2024}
+        \textbf{Financial Time-Series Forecasting \& Volatility Modeling}
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Developed a hybrid ARIMA-LSTM model to forecast stock price movements and market volatility using historical S\&P 500 and Forex data.
+            \item Implemented GARCH models to statistically analyze volatility clustering and heteroskedasticity in asset returns, providing robust risk estimates for algorithmic trading strategies.
+            \item \textbf{Impact:} Improved directional forecasting accuracy by 7\% over traditional econometric models, enabling better timing for portfolio rebalancing and hedging decisions.
+        \end{highlights}
+    \end{onecolentry}
+
+    \vspace{0.06 cm}
+
+    \begin{twocolentry}{2024}
+        \textbf{Customer Lifetime Value (LTV) \& Churn Analytics (Banking)}
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Engineered ensemble ML models (Gradient Boosting, SVM) to predict customer churn in the retail banking sector, focusing on high-net-worth individuals.
+            \item Performed PCA for dimensionality reduction and integrated behavioral transaction data to generate personalized retention strategies.
+            \item \textbf{Impact:} Achieved 91\% prediction accuracy; implementing the model could increase overall portfolio profitability by 6\% by proactively retaining at-risk, high-value clients with targeted offers.
+        \end{highlights}
+    \end{onecolentry}
+
+    \section{EDUCATION}
+    \begin{twocolentry}{May 2025}
+        \textbf{M.Sc. Statistics \& Data Science}, NMIMS Mumbai
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item CGPA: 3.67 / 4.0
+        \end{highlights}
+    \end{onecolentry}
+    \vspace{0.05 cm}
+    \begin{twocolentry}{2023}
+        \textbf{B.Sc. Statistics}, B.N. Bandodkar College, Mumbai
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item CGPA: 9.7 / 10.0
+        \end{highlights}
+    \end{onecolentry}
+
+    \section{CERTIFICATIONS}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Python with Data Science (Udemy)
+            \item Machine Learning Advanced (Udemy)
+            \item Deep Learning with TensorFlow (Udemy)
+        \end{highlights}
+    \end{onecolentry}
+
+\end{document}

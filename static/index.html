@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek AI Resume Tailor & PDF Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="top-header">
+            <div class="brand">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>DeepSeek Resume Tailor</h1>
+                    <span class="badge">OpenRouter AI</span>
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <div class="input-group">
+                    <label for="apiKey"><i class="fa-solid fa-key"></i> OpenRouter API Key</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="apiKey" placeholder="sk-or-v1-..." autocomplete="off">
+                        <button type="button" id="toggleKeyBtn" title="Toggle visibility">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="modelSelect"><i class="fa-solid fa-brain"></i> Model</label>
+                    <select id="modelSelect">
+                        <option value="deepseek/deepseek-chat" selected>DeepSeek Chat (V3)</option>
+                        <option value="deepseek/deepseek-r1">DeepSeek R1 (Reasoning)</option>
+                        <option value="deepseek/deepseek-r1-distill-llama-70b">DeepSeek R1 Distill 70B</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <main class="main-content">
+            <!-- Left Column: Input & Controls -->
+            <section class="panel input-panel">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-briefcase"></i> Job Description</h2>
+                    <div class="sample-chips">
+                        <span>Sample JDs:</span>
+                        <button class="chip" data-sample="quant">Quant Scientist</button>
+                        <button class="chip" data-sample="genai">GenAI Engineer</button>
+                        <button class="chip" data-sample="risk">Risk Analyst</button>
+                    </div>
+                </div>
+
+                <div class="upload-zone" id="dropZone">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <p>Drag & Drop JD file here or <span class="browse-link">Browse (.txt, .md)</span></p>
+                    <input type="file" id="fileInput" accept=".txt,.md,.pdf,.docx" style="display:none;">
+                </div>
+
+                <div class="textarea-wrapper">
+                    <textarea id="jdInput" placeholder="Paste target Job Description here... (e.g. Required skills: PyTorch, Credit Scoring, XGBoost, LLMs, Risk Modeling...)"></textarea>
+                </div>
+
+                <div class="action-footer">
+                    <button id="btnGenerate" class="btn btn-primary">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Tailor & Generate PDF
+                    </button>
+                </div>
+
+                <!-- Status & Pipeline Steps -->
+                <div class="pipeline-card" id="pipelineCard" style="display: none;">
+                    <h3><i class="fa-solid fa-spinner fa-spin"></i> Tailoring Resume...</h3>
+                    <ul class="steps-list">
+                        <li id="step1" class="step waiting"><i class="fa-regular fa-circle-check"></i> 1. Parsing Job Description</li>
+                        <li id="step2" class="step waiting"><i class="fa-regular fa-circle-check"></i> 2. DeepSeek AI Customizing Projects</li>
+                        <li id="step3" class="step waiting"><i class="fa-regular fa-circle-check"></i> 3. Compiling LaTeX to PDF</li>
+                        <li id="step4" class="step waiting"><i class="fa-regular fa-circle-check"></i> 4. Ready!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Right Column: PDF Preview & Code Tabs -->
+            <section class="panel preview-panel">
+                <div class="panel-header">
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" data-tab="pdfTab"><i class="fa-solid fa-file-pdf"></i> Tailored PDF Preview</button>
+                        <button class="tab-btn" data-tab="codeTab"><i class="fa-solid fa-code"></i> LaTeX Source Code</button>
+                    </div>
+
+                    <div class="preview-actions">
+                        <a id="btnDownload" href="#" download="Suraj_Vishwakarma_Tailored_Resume.pdf" class="btn btn-secondary disabled" target="_blank">
+                            <i class="fa-solid fa-download"></i> Download PDF
+                        </a>
+                    </div>
+                </div>
+
+                <div class="tab-content">
+                    <!-- PDF Tab -->
+                    <div id="pdfTab" class="tab-pane active">
+                        <div id="pdfPlaceholder" class="placeholder-state">
+                            <div class="placeholder-icon"><i class="fa-solid fa-file-invoice"></i></div>
+                            <h3>No PDF Generated Yet</h3>
+                            <p>Paste a Job Description on the left and click <strong>Tailor & Generate PDF</strong> to see your tailored resume here.</p>
+                        </div>
+                        <iframe id="pdfFrame" style="display: none;" title="Resume PDF Preview"></iframe>
+                    </div>
+
+                    <!-- Code Tab -->
+                    <div id="codeTab" class="tab-pane">
+                        <div class="code-header">
+                            <span>LaTeX Code (Auto-generated by DeepSeek)</span>
+                            <button id="btnCopyCode" class="btn btn-small"><i class="fa-regular fa-copy"></i> Copy</button>
+                        </div>
+                        <textarea id="latexCodeEditor" spellcheck="false" placeholder="Generated LaTeX code will appear here..."></textarea>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
