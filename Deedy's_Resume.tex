@@ -1,0 +1,118 @@
+% Standalone Deedy-style resume. For the full custom class,
+% download deedy-resume-openfont.cls from https://github.com/deedy/Deedy-Resume
+\documentclass[10pt,letterpaper]{article}
+\usepackage[top=0.5in,bottom=0.5in,left=0.75in,right=0.75in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{paracol}
+\setlength{\parindent}{0pt}
+\pagestyle{empty}
+
+\definecolor{primary}{HTML}{2b2b2b}
+\definecolor{headings}{HTML}{6A6A6A}
+\definecolor{subheadings}{HTML}{333333}
+
+\titleformat{\section}{\color{primary}\scshape\raggedright\large}{}{0em}{}
+\titleformat{\subsection}{\color{subheadings}\bfseries\small}{}{0em}{}
+
+\begin{document}
+
+\centerline{\Huge\bfseries First Last}
+\vspace{4pt}
+\centerline{\small 123 Street, City, CA \textbullet\ +1 555 123 4567 \textbullet\ \href{mailto:you@example.com}{you@example.com} \textbullet\ \href{https://github.com/you}{github.com/you}}
+
+\vspace{12pt}
+\setcolumnwidth{0.33\textwidth, 0.66\textwidth}
+\begin{paracol}{2}
+
+\section*{Education}
+\subsection*{Stanford University}
+B.S.\ in Computer Science \\
+{\footnotesize GPA: 3.84 / 4.0} \\
+{\footnotesize 2014 -- 2018}
+
+\subsection*{Phillips Academy}
+High School \\
+{\footnotesize GPA: 3.95 / 4.0} \\
+{\footnotesize 2010 -- 2014}
+
+\vspace{4pt}
+\section*{Links}
+\href{https://github.com/you}{github.com/you} \\
+\href{https://linkedin.com/in/you}{linkedin.com/in/you} \\
+\href{https://twitter.com/you}{twitter.com/you} \\
+\href{https://example.com}{example.com}
+
+\vspace{4pt}
+\section*{Coursework}
+\subsection*{Graduate}
+Advanced Algorithms \\
+Convex Optimization \\
+Distributed Systems \\
+Compilers
+
+\subsection*{Undergraduate}
+Data Structures \\
+Operating Systems \\
+Discrete Mathematics \\
+Machine Learning \\
+Probability Theory
+
+\vspace{4pt}
+\section*{Skills}
+\subsection*{Over 5000 lines}
+Python \textbullet{} Go \textbullet{} JavaScript \\
+TypeScript \textbullet{} Java
+
+\subsection*{Over 1000 lines}
+Rust \textbullet{} C++ \textbullet{} SQL \textbullet{} Bash
+
+\subsection*{Familiar}
+Scala \textbullet{} Haskell \textbullet{} Ruby
+
+\switchcolumn
+
+\section*{Experience}
+\subsection*{Stripe \hfill \normalfont\footnotesize San Francisco, CA}
+\textit{Senior Software Engineer} \hfill {\footnotesize Jan 2022 -- Present}
+\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=2pt]
+  \item Led billing service migration, cutting p99 latency by 42\%.
+  \item Designed rate-limiting layer handling 2.4M RPS at peak.
+  \item Mentored 4 junior engineers; 2 promoted within 18 months.
+\end{itemize}
+
+\subsection*{Airbnb \hfill \normalfont\footnotesize San Francisco, CA}
+\textit{Software Engineer} \hfill {\footnotesize Jul 2018 -- Dec 2021}
+\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=2pt]
+  \item Built payments integration for Japan, Brazil, India.
+  \item Reduced checkout abandonment by 11\%.
+\end{itemize}
+
+\subsection*{Google \hfill \normalfont\footnotesize Mountain View, CA}
+\textit{Software Engineering Intern} \hfill {\footnotesize Summer 2017}
+\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=2pt]
+  \item Prototyped internal observability tool, adopted by 2 teams.
+\end{itemize}
+
+\section*{Research}
+\subsection*{Stanford DAWN Lab}
+\textit{Undergraduate researcher} \hfill {\footnotesize 2017 -- 2018}
+\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=2pt]
+  \item Investigated incremental view maintenance under Prof.\ M.\ Zaharia.
+  \item Co-authored paper at VLDB 2019.
+\end{itemize}
+
+\section*{Awards}
+\textit{1st place}, Stanford Hackathon 2017 \\
+\textit{Gold medal}, USACO 2013 \\
+\textit{Finalist}, ACM-ICPC Regionals 2016, 2017
+
+\section*{Publications}
+Last, F.\ and Others (2019). ``Incremental view maintenance at scale.'' \textit{VLDB} 12(5), pp. 101--115.
+
+\end{paracol}
+
+\end{document}

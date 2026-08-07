@@ -34,26 +34,24 @@ from compile import (
     compile_tex_string
 )
 
-app = FastAPI(title="DeepSeek OpenRouter Resume Tailor & Builder")
+app = FastAPI(title="Underleaf - DeepSeek AI Resume Tailor & Multi-Template Studio")
 
-# Directory for generated outputs
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "generated_pdfs")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Mount static files directory
 STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 class TailorRequest(BaseModel):
     job_description: str
-    template_id: Optional[str] = "classic_executive"
+    template_id: Optional[str] = "jake_ryan"
     openrouter_api_key: Optional[str] = None
     model: Optional[str] = "deepseek/deepseek-chat"
     profile_data: Optional[Dict[str, Any]] = None
 
 class ScratchRequest(BaseModel):
-    template_id: Optional[str] = "classic_executive"
+    template_id: Optional[str] = "jake_ryan"
     job_description: Optional[str] = ""
     openrouter_api_key: Optional[str] = None
     model: Optional[str] = "deepseek/deepseek-chat"
@@ -85,123 +83,130 @@ def clean_latex_text(text: str) -> str:
     return text
 
 def format_summary_to_latex(summary_str: str) -> str:
-    """Format summary string for LaTeX."""
-    summary_clean = clean_latex_text(summary_str.strip())
-    return f"        {summary_clean}"
+    return clean_latex_text(summary_str.strip())
 
-def format_skills_to_latex(skills_dict: dict) -> str:
-    """Format technical skills dict into LaTeX onecolentry blocks."""
+def format_skills_to_latex(skills_dict: dict, template_id: str = "jake_ryan") -> str:
     if isinstance(skills_dict, str):
-        return f"    \\begin{{onecolentry}}\n        {clean_latex_text(skills_dict)}\n    \\end{{onecolentry}}"
+        return clean_latex_text(skills_dict)
         
-    domains = clean_latex_text(skills_dict.get("domains", "Financial Risk Modeling, Predictive Analytics, NLP, LLMs, Quantitative Research, Credit Scoring, Time-Series Analysis."))
-    languages = clean_latex_text(skills_dict.get("languages", "Python, R, SQL, SAS."))
-    libraries = clean_latex_text(skills_dict.get("libraries", "Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch, LangChain, Statsmodels, Hugging Face, Transformers."))
-    tools = clean_latex_text(skills_dict.get("tools", "Power BI, Tableau, AWS, Streamlit, Git, RMS, AIR, CatRisk."))
+    domains = clean_latex_text(skills_dict.get("domains", "Financial Risk Modeling, Predictive Analytics, NLP, LLMs"))
+    languages = clean_latex_text(skills_dict.get("languages", "Python, R, SQL, SAS"))
+    libraries = clean_latex_text(skills_dict.get("libraries", "Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch, LangChain"))
+    tools = clean_latex_text(skills_dict.get("tools", "Power BI, Tableau, AWS, Streamlit, Git"))
     
-    return f"""    \\begin{{onecolentry}}
-        \\textbf{{Domains:}} {domains}
-    \\end{{onecolentry}}
-    \\vspace{{0.01 cm}}
-    \\begin{{onecolentry}}
-        \\textbf{{Languages:}} {languages}
-    \\end{{onecolentry}}
-    \\vspace{{0.01 cm}}
-    \\begin{{onecolentry}}
-        \\textbf{{Libraries:}} {libraries}
-    \\end{{onecolentry}}
-    \\vspace{{0.01 cm}}
-    \\begin{{onecolentry}}
-        \\textbf{{Tools:}} {tools}
-    \\end{{onecolentry}}"""
+    if template_id == "jake_ryan":
+        return f"\\textbf{{Domains:}} {{{domains}}} \\\\ \n\\textbf{{Languages:}} {{{languages}}} \\\\ \n\\textbf{{Libraries/Frameworks:}} {{{libraries}}} \\\\ \n\\textbf{{Tools:}} {{{tools}}}"
+    elif template_id == "deedy_resume":
+        return f"\\subsection*{{Domains}}\n{domains}\n\n\\subsection*{{Languages}}\n{languages}\n\n\\subsection*{{Libraries}}\n{libraries}\n\n\\subsection*{{Tools}}\n{tools}"
+    else:
+        return f"\\textbf{{Domains:}} {domains} \\\\\n\\textbf{{Languages:}} {languages} \\\\\n\\textbf{{Libraries:}} {libraries} \\\\\n\\textbf{{Tools:}} {tools}"
 
-def format_projects_to_latex(projects_data: list) -> str:
-    """Format a list of project dicts into valid LaTeX project entries."""
-    latex_blocks = []
+def format_experience_to_latex(exp_data: list, template_id: str = "jake_ryan") -> str:
+    if not exp_data:
+        return ""
+    blocks = []
+    for exp in exp_data:
+        dates = clean_latex_text(exp.get("dates", "May 2026 -- Present"))
+        role = clean_latex_text(exp.get("role", "AI Engineer"))
+        company = clean_latex_text(exp.get("company", "PSS"))
+        loc = clean_latex_text(exp.get("location", "Mumbai, IN"))
+        bullets = exp.get("bullets", [])
+        
+        if template_id == "jake_ryan":
+            bullet_tex = "\n".join([f"        \\resumeItem{{{clean_latex_text(b)}}}" for b in bullets])
+            block = f"""    \\resumeSubheading
+      {{{role}}}{{{dates}}}
+      {{{company}}}{{{loc}}}
+      \\resumeItemListStart
+{bullet_tex}
+      \\resumeItemListEnd"""
+        elif template_id == "deedy_resume":
+            bullet_tex = "\n".join([f"  \\item {clean_latex_text(b)}" for b in bullets])
+            block = f"""\\subsection*{{{company} \\hfill \\normalfont\\footnotesize {loc}}}
+\\textit{{{role}}} \\hfill {{\\footnotesize {dates}}}
+\\begin{{itemize}}[leftmargin=*,itemsep=1pt,topsep=2pt]
+{bullet_tex}
+\\end{{itemize}}"""
+        else:
+            bullet_tex = "\n".join([f"            \\item {clean_latex_text(b)}" for b in bullets])
+            block = f"""    \\textbf{{{role}}}, {company} \\hfill {{{dates}}}\\\\
+    \\begin{{itemize}}[leftmargin=12pt, topsep=1pt, itemsep=1pt]
+{bullet_tex}
+    \\end{{itemize}}"""
+        blocks.append(block)
+    return "\n\n".join(blocks)
+
+def format_projects_to_latex(projects_data: list, template_id: str = "jake_ryan") -> str:
+    if not projects_data:
+        return ""
+    blocks = []
     for proj in projects_data[:3]:
         year = clean_latex_text(proj.get("year", "2024"))
         title = clean_latex_text(proj.get("title", "Data Science Project"))
         bullets = proj.get("bullets", [])
         
-        bullet_items = []
-        for i, b in enumerate(bullets):
-            b_str = clean_latex_text(b)
-            if b_str.lower().startswith("impact:"):
-                b_str = b_str[7:].strip()
-                bullet_items.append(f"            \\item \\textbf{{Impact:}} {b_str}")
-            elif i == len(bullets) - 1 and not any("impact" in item.lower() for item in bullet_items):
-                bullet_items.append(f"            \\item \\textbf{{Impact:}} {b_str}")
-            else:
-                bullet_items.append(f"            \\item {b_str}")
-                
-        bullets_tex = "\n".join(bullet_items)
-        
-        block = f"""    \\begin{{twocolentry}}{{{year}}}
-        \\textbf{{{title}}}
-    \\end{{twocolentry}}
-    \\vspace{{0.01 cm}}
-    \\begin{{onecolentry}}
-        \\begin{{highlights}}
+        if template_id == "jake_ryan":
+            bullet_items = []
+            for i, b in enumerate(bullets):
+                b_str = clean_latex_text(b)
+                if b_str.lower().startswith("impact:"):
+                    b_str = b_str[7:].strip()
+                    bullet_items.append(f"        \\resumeItem{{\\textbf{{Impact:}} {b_str}}}")
+                else:
+                    bullet_items.append(f"        \\resumeItem{{{b_str}}}")
+            bullets_tex = "\n".join(bullet_items)
+            block = f"""    \\resumeProjectHeading
+      {{\\textbf{{{title}}}}}{{{year}}}
+      \\resumeItemListStart
 {bullets_tex}
-        \\end{{highlights}}
-    \\end{{onecolentry}}"""
-        latex_blocks.append(block)
-        
-    return "\n\n    \\vspace{0.01 cm}\n\n".join(latex_blocks)
-
-def format_experience_to_latex(exp_data: list) -> str:
-    """Format work experience list into LaTeX."""
-    if not exp_data:
-        return ""
-    latex_blocks = []
-    for exp in exp_data:
-        dates = clean_latex_text(exp.get("dates", "May 2026 -- Present"))
-        role = clean_latex_text(exp.get("role", "AI Engineer"))
-        company = clean_latex_text(exp.get("company", "PSS"))
-        bullets = exp.get("bullets", [])
-        
-        bullet_items = [f"            \\item {clean_latex_text(b)}" for b in bullets]
-        bullets_tex = "\n".join(bullet_items)
-        
-        block = f"""    \\begin{{twocolentry}}{{{dates}}}
-        \\textbf{{{role}}}, {company}
-    \\end{{twocolentry}}
-    \\vspace{{0.01 cm}}
-    \\begin{{onecolentry}}
-        \\begin{{highlights}}
+      \\resumeItemListEnd"""
+        elif template_id == "deedy_resume":
+            bullet_items = [f"  \\item {clean_latex_text(b)}" for b in bullets]
+            bullets_tex = "\n".join(bullet_items)
+            block = f"""\\subsection*{{{title} \\hfill \\normalfont\\footnotesize {year}}}
+\\begin{{itemize}}[leftmargin=*,itemsep=1pt,topsep=2pt]
 {bullets_tex}
-        \\end{{highlights}}
-    \\end{{onecolentry}}"""
-        latex_blocks.append(block)
-    return "\n\n    \\vspace{0.01 cm}\n\n".join(latex_blocks)
+\\end{{itemize}}"""
+        else:
+            bullet_items = [f"            \\item {clean_latex_text(b)}" for b in bullets]
+            bullets_tex = "\n".join(bullet_items)
+            block = f"""    \\textbf{{{title}}} \\hfill {{{year}}}\\\\
+    \\begin{{itemize}}[leftmargin=12pt, topsep=1pt, itemsep=1pt]
+{bullets_tex}
+    \\end{{itemize}}"""
+        blocks.append(block)
+    return "\n\n".join(blocks)
 
-def format_education_to_latex(edu_data: list) -> str:
-    """Format education list into LaTeX."""
+def format_education_to_latex(edu_data: list, template_id: str = "jake_ryan") -> str:
     if not edu_data:
         return ""
-    latex_blocks = []
+    blocks = []
     for edu in edu_data:
-        year = clean_latex_text(edu.get("year", "2025"))
-        degree = clean_latex_text(edu.get("degree", "M.Sc. Statistics"))
-        inst = clean_latex_text(edu.get("institution", "University"))
-        detail = clean_latex_text(edu.get("detail", ""))
+        year = clean_latex_text(edu.get("year", "May 2025"))
+        degree = clean_latex_text(edu.get("degree", "M.Sc. Statistics & Data Science"))
+        inst = clean_latex_text(edu.get("institution", "NMIMS Mumbai"))
+        loc = clean_latex_text(edu.get("location", "Mumbai, IN"))
+        detail = clean_latex_text(edu.get("detail", "CGPA: 3.67 / 4.0"))
         
-        detail_tex = f"\n        \\begin{{highlights}}\n            \\item {detail}\n        \\end{{highlights}}" if detail else ""
-        
-        block = f"""    \\begin{{twocolentry}}{{{year}}}
-        \\textbf{{{degree}}}, {inst}
-    \\end{{twocolentry}}
-    \\vspace{{0.01 cm}}
-    \\begin{{onecolentry}}{detail_tex}
-    \\end{{onecolentry}}"""
-        latex_blocks.append(block)
-    return "\n\n    \\vspace{0.01 cm}\n\n".join(latex_blocks)
+        if template_id == "jake_ryan":
+            block = f"""    \\resumeSubheading
+      {{{inst}}}{{{loc}}}
+      {{{degree}}}{{{year}}}"""
+        elif template_id == "deedy_resume":
+            block = f"""\\subsection*{{{inst}}}
+{degree} \\\\
+{{\\footnotesize {detail}}} \\\\
+{{\\footnotesize {year}}}"""
+        else:
+            block = f"""    \\textbf{{{inst}}} \\hfill {{{year}}}\\\\
+    \\textit{{{degree}}} -- {{{detail}}}"""
+        blocks.append(block)
+    return "\n\n".join(blocks)
 
 def format_certifications_to_latex(certs_data: list) -> str:
-    """Format certifications list into LaTeX bullet points."""
     if not certs_data:
         return ""
-    return "\n".join([f"            \\item {clean_latex_text(c)}" for c in certs_data])
+    return "\n".join([f"  \\item {clean_latex_text(c)}" for c in certs_data])
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
@@ -209,7 +214,7 @@ def read_root():
     if os.path.exists(index_file):
         with open(index_file, "r", encoding="utf-8") as f:
             return f.read()
-    return "<h1>DeepSeek Resume Tailor & Builder Running</h1>"
+    return "<h1>Underleaf AI Resume Studio Running</h1>"
 
 @app.get("/api/templates")
 def get_templates():
@@ -221,7 +226,6 @@ def get_base_template():
 
 @app.post("/api/upload-resume")
 async def upload_resume(file: UploadFile = File(...), openrouter_api_key: Optional[str] = Form(None)):
-    """Extract text from PDF/DOCX/TEX file and parse into structured profile JSON using DeepSeek."""
     filename = file.filename.lower()
     content_bytes = await file.read()
     extracted_text = ""
@@ -303,7 +307,7 @@ async def upload_resume(file: UploadFile = File(...), openrouter_api_key: Option
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
         "HTTP-Referer": "http://localhost:8050",
-        "X-Title": "DeepSeek Resume Tailor"
+        "X-Title": "Underleaf Resume Tailor"
     }
     
     payload = {
@@ -326,10 +330,9 @@ async def upload_resume(file: UploadFile = File(...), openrouter_api_key: Option
 
 @app.post("/api/generate-from-scratch")
 async def generate_from_scratch(req: ScratchRequest):
-    """Generate resume PDF from scratch using template and profile JSON data."""
     cleanup_old_pdfs(max_age_seconds=300, max_files=3)
     
-    template_id = req.template_id if req.template_id in TEMPLATES_REGISTRY else "classic_executive"
+    template_id = req.template_id if req.template_id in TEMPLATES_REGISTRY else "jake_ryan"
     template_info = TEMPLATES_REGISTRY[template_id]
     latex_tmpl = template_info["latex_template"]
     
@@ -341,31 +344,27 @@ async def generate_from_scratch(req: ScratchRequest):
     linkedin = clean_latex_text(p.get("linkedin", "LinkedIn"))
     github = clean_latex_text(p.get("github", "GitHub"))
     
-    contact_line = f"{loc} | {email} | {phone} | {linkedin} | {github}"
-    contact_sidebar = f"{email}\\\\{phone}\\\\{loc}\\\\{linkedin}"
+    contact_line = f"{phone} $|$ \\href{{mailto:{email}}}{{\\underline{{{email}}}}} $|$ \\href{{{linkedin}}}{{\\underline{{linkedin.com}}}} $|$ \\href{{{github}}}{{\\underline{{github.com}}}}"
     
     summary_tex = format_summary_to_latex(p.get("summary", DEFAULT_SUMMARY_LATEX))
-    skills_tex = format_skills_to_latex(p.get("skills", {}))
-    skills_sidebar = format_skills_to_latex(p.get("skills", {}))
-    exp_tex = format_experience_to_latex(p.get("experience", []))
-    projects_tex = format_projects_to_latex(p.get("projects", []))
-    edu_tex = format_education_to_latex(p.get("education", []))
-    edu_sidebar = format_education_to_latex(p.get("education", []))
+    skills_tex = format_skills_to_latex(p.get("skills", {}), template_id)
+    exp_tex = format_experience_to_latex(p.get("experience", []), template_id)
+    projects_tex = format_projects_to_latex(p.get("projects", []), template_id)
+    edu_tex = format_education_to_latex(p.get("education", []), template_id)
     certs_tex = format_certifications_to_latex(p.get("certifications", []))
     
-    # Render final LaTeX string
     clean_latex = latex_tmpl \
         .replace("{{NAME}}", name) \
         .replace("{{CONTACT_LINE}}", contact_line) \
-        .replace("{{CONTACT_SIDEBAR}}", contact_sidebar) \
         .replace("{{SUMMARY_SECTION}}", summary_tex) \
         .replace("{{SKILLS_SECTION}}", skills_tex) \
-        .replace("{{SKILLS_SIDEBAR}}", skills_sidebar) \
+        .replace("{{SKILLS_SIDEBAR}}", skills_tex) \
         .replace("{{EXPERIENCE_SECTION}}", exp_tex) \
         .replace("{{PROJECTS_SECTION}}", projects_tex) \
         .replace("{{EDUCATION_SECTION}}", edu_tex) \
-        .replace("{{EDUCATION_SIDEBAR}}", edu_sidebar) \
-        .replace("{{CERTIFICATIONS_SECTION}}", certs_tex)
+        .replace("{{EDUCATION_SIDEBAR}}", edu_tex) \
+        .replace("{{CERTIFICATIONS_SECTION}}", certs_tex) \
+        .replace("{{CERTIFICATIONS_SIDEBAR}}", certs_tex)
         
     req_id = str(uuid.uuid4())[:8]
     pdf_filename = f"resume_{req_id}.pdf"
@@ -398,7 +397,7 @@ async def tailor_and_generate(req: TailorRequest):
         raise HTTPException(status_code=400, detail="OpenRouter API Key is missing. Please enter key or set OPENROUTER_API_KEY in .env.")
         
     model_name = req.model or "deepseek/deepseek-chat"
-    template_id = req.template_id if req.template_id in TEMPLATES_REGISTRY else "classic_executive"
+    template_id = req.template_id if req.template_id in TEMPLATES_REGISTRY else "jake_ryan"
     template_info = TEMPLATES_REGISTRY[template_id]
     latex_tmpl = template_info["latex_template"]
     
@@ -443,7 +442,7 @@ async def tailor_and_generate(req: TailorRequest):
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
         "HTTP-Referer": "http://localhost:8050",
-        "X-Title": "DeepSeek Resume Tailor"
+        "X-Title": "Underleaf Resume Tailor"
     }
     
     payload = {
@@ -479,12 +478,12 @@ async def tailor_and_generate(req: TailorRequest):
         ai_data = json.loads(json_match.group(0)) if json_match else json.loads(generated_content)
         
         summary_tex = format_summary_to_latex(ai_data.get("tailored_summary", DEFAULT_SUMMARY_LATEX))
-        skills_tex = format_skills_to_latex(ai_data.get("tailored_skills", {}))
-        projects_tex = format_projects_to_latex(ai_data.get("tailored_projects", []))
+        skills_tex = format_skills_to_latex(ai_data.get("tailored_skills", {}), template_id)
+        projects_tex = format_projects_to_latex(ai_data.get("tailored_projects", []), template_id)
     except Exception as parse_err:
         summary_tex = DEFAULT_SUMMARY_LATEX
-        skills_tex = DEFAULT_SKILLS_LATEX
-        projects_tex = DEFAULT_PROJECTS_LATEX
+        skills_tex = format_skills_to_latex({}, template_id)
+        projects_tex = format_projects_to_latex([], template_id)
         
     name = clean_latex_text(profile.get("name", "Suraj Vishwakarma"))
     loc = clean_latex_text(profile.get("location", "Dombivli, Mumbai"))
@@ -493,17 +492,15 @@ async def tailor_and_generate(req: TailorRequest):
     linkedin = clean_latex_text(profile.get("linkedin", "LinkedIn"))
     github = clean_latex_text(profile.get("github", "GitHub"))
     
-    contact_line = f"{loc} | {email} | {phone} | {linkedin} | {github}"
-    contact_sidebar = f"{email}\\\\{phone}\\\\{loc}\\\\{linkedin}"
+    contact_line = f"{phone} $|$ \\href{{mailto:{email}}}{{\\underline{{{email}}}}} $|$ \\href{{{linkedin}}}{{\\underline{{linkedin.com}}}} $|$ \\href{{{github}}}{{\\underline{{github.com}}}}"
     
-    exp_tex = format_experience_to_latex(profile.get("experience", []))
-    edu_tex = format_education_to_latex(profile.get("education", []))
+    exp_tex = format_experience_to_latex(profile.get("experience", []), template_id)
+    edu_tex = format_education_to_latex(profile.get("education", []), template_id)
     certs_tex = format_certifications_to_latex(profile.get("certifications", []))
     
     clean_latex = latex_tmpl \
         .replace("{{NAME}}", name) \
         .replace("{{CONTACT_LINE}}", contact_line) \
-        .replace("{{CONTACT_SIDEBAR}}", contact_sidebar) \
         .replace("{{SUMMARY_SECTION}}", summary_tex) \
         .replace("{{SKILLS_SECTION}}", skills_tex) \
         .replace("{{SKILLS_SIDEBAR}}", skills_tex) \
@@ -511,7 +508,8 @@ async def tailor_and_generate(req: TailorRequest):
         .replace("{{PROJECTS_SECTION}}", projects_tex) \
         .replace("{{EDUCATION_SECTION}}", edu_tex) \
         .replace("{{EDUCATION_SIDEBAR}}", edu_tex) \
-        .replace("{{CERTIFICATIONS_SECTION}}", certs_tex)
+        .replace("{{CERTIFICATIONS_SECTION}}", certs_tex) \
+        .replace("{{CERTIFICATIONS_SIDEBAR}}", certs_tex)
     
     req_id = str(uuid.uuid4())[:8]
     pdf_filename = f"resume_{req_id}.pdf"

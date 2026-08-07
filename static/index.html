@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepSeek AI Resume Tailor & Multi-Template Builder</title>
+    <title>Underleaf — The LaTeX resume, done right.</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
@@ -15,282 +15,209 @@
 </head>
 <body>
 
-    <!-- Header Navigation -->
-    <header class="app-header">
-        <div class="logo-area">
-            <div class="logo-icon">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="brand-logo">
+                <div class="brand-icon"><i class="fa-solid fa-leaf"></i></div>
+                <span class="brand-name">Underleaf</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="#templatesSection" class="nav-item active">Free Templates</a>
+                <a href="#studioSection" class="nav-item">AI Conversion</a>
+                <a href="#" class="nav-item">Tools <i class="fa-solid fa-chevron-down"></i></a>
             </div>
-            <div>
-                <h1>DeepSeek AI Resume Studio</h1>
-                <p class="subtitle">Multi-Template LaTeX Resume Tailor & Builder</p>
+
+            <div class="nav-actions">
+                <!-- API Key Bar -->
+                <div class="api-key-box">
+                    <i class="fa-solid fa-key"></i>
+                    <input type="password" id="apiKey" placeholder="OpenRouter Key...">
+                    <button id="toggleKeyBtn" class="btn-eye" title="Toggle visibility"><i class="fa-solid fa-eye"></i></button>
+                </div>
+                <button class="btn-nav-primary" id="btnTryFree">Try Free <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </div>
+    </nav>
 
-        <div class="header-actions">
-            <!-- Mode Switcher Pill -->
-            <div class="mode-switcher">
-                <button class="mode-btn active" id="modeTailorBtn">
-                    <i class="fa-solid fa-bullseye"></i> Tailor Resume
-                </button>
-                <button class="mode-btn" id="modeScratchBtn">
-                    <i class="fa-solid fa-pen-ruler"></i> Build from Scratch
-                </button>
-            </div>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-badge">FREE TEMPLATES • AI CONVERSION</div>
+        <h1 class="hero-title">The LaTeX resume, <span class="hero-gradient">done right.</span></h1>
+        <p class="hero-subtitle">Pick a free, ATS-friendly LaTeX resume template — or upload the resume you already have and let AI convert it to clean LaTeX.</p>
 
-            <!-- API Key Controls -->
-            <div class="api-key-container">
-                <i class="fa-solid fa-key key-icon"></i>
-                <input type="password" id="apiKey" placeholder="OpenRouter API Key (Optional)...">
-                <button id="toggleKeyBtn" class="btn-icon" title="Toggle Visibility">
-                    <i class="fa-solid fa-eye"></i>
-                </button>
-            </div>
+        <div class="hero-cta-group">
+            <a href="#templatesSection" class="btn-hero-primary">Browse Templates <i class="fa-solid fa-arrow-right"></i></a>
+            <button class="btn-hero-secondary" id="btnConvertHero">Convert Your Resume <i class="fa-solid fa-wand-magic-sparkles"></i></button>
         </div>
-    </header>
 
-    <!-- Main Studio Layout -->
-    <main class="studio-grid">
+        <div class="hero-guarantee"><i class="fa-regular fa-credit-card"></i> Free to use • No credit card required</div>
+    </section>
+
+    <!-- Main Content Container -->
+    <main class="main-content">
         
-        <!-- Left Panel: Input & Settings -->
-        <section class="panel control-panel">
+        <!-- SECTION 1: TEMPLATE GALLERY -->
+        <section class="section-container" id="templatesSection">
+            <div class="section-meta-header">
+                <span class="section-number">01 THE TEMPLATES</span>
+                <span class="section-count">5 CURATED</span>
+            </div>
 
-            <!-- Template Selector Gallery -->
-            <div class="card template-card">
-                <div class="card-header">
-                    <h2><i class="fa-solid fa-palette"></i> Choose Resume Template</h2>
-                    <span class="badge" id="selectedTemplateBadge">Classic Executive</span>
+            <div class="templates-header-row">
+                <div>
+                    <h2 class="section-title">LaTeX Resume Templates</h2>
+                    <p class="section-desc">Free and fully customizable. Download the source, or fill a template with your details using AI.</p>
                 </div>
-                <div class="template-grid" id="templateGrid">
-                    <!-- Loaded dynamically via JS -->
+
+                <div class="template-filter-pills">
+                    <button class="filter-btn active" data-filter="all">All Templates</button>
+                    <button class="filter-btn" data-filter="ats">ATS Popular</button>
+                    <button class="filter-btn" data-filter="tech">2-Column Tech</button>
                 </div>
             </div>
 
-            <!-- MODE 1: TAILOR RESUME (Upload or Paste JD) -->
-            <div id="modeTailorView">
-                <!-- Resume File Upload Dropzone -->
-                <div class="card upload-card">
-                    <div class="card-header">
-                        <h2><i class="fa-solid fa-file-arrow-up"></i> Upload Existing Resume (Optional)</h2>
-                        <span class="help-text">PDF, DOCX, or TEX</span>
-                    </div>
-                    <div class="drop-zone" id="resumeDropZone">
-                        <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
-                        <p class="drop-text">Drag & drop your resume file here or <span>browse</span></p>
-                        <span class="file-info" id="resumeFileInfo">Supports .pdf, .docx, .tex (DeepSeek will auto-parse it)</span>
-                        <input type="file" id="resumeFileInput" accept=".pdf,.docx,.doc,.tex,.txt" hidden>
-                    </div>
-                </div>
-
-                <!-- Job Description Input -->
-                <div class="card jd-card">
-                    <div class="card-header">
-                        <h2><i class="fa-solid fa-briefcase"></i> Target Job Description</h2>
-                        <div class="model-selector">
-                            <i class="fa-solid fa-robot"></i>
-                            <select id="modelSelect">
-                                <option value="deepseek/deepseek-chat" selected>DeepSeek V3 (Fast)</option>
-                                <option value="deepseek/deepseek-r1">DeepSeek R1 (Reasoning)</option>
-                                <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <textarea id="jdInput" placeholder="Paste target Job Description here to tailor Summary, Skills, and Projects..."></textarea>
-                    
-                    <div class="sample-jds">
-                        <span class="sample-label">Sample JDs:</span>
-                        <button class="btn-chip" data-sample="quant">Quant & Risk Analyst</button>
-                        <button class="btn-chip" data-sample="genai">GenAI & LLM Engineer</button>
-                        <button class="btn-chip" data-sample="datasci">Senior Data Scientist</button>
-                    </div>
-
-                    <button id="btnGenerate" class="btn-primary">
-                        <i class="fa-solid fa-bolt-lightning"></i> Tailor & Generate PDF
-                    </button>
-                </div>
+            <!-- Templates Card Grid -->
+            <div class="templates-grid" id="templatesGrid">
+                <!-- Template Cards rendered via JS -->
             </div>
-
-            <!-- MODE 2: BUILD FROM SCRATCH -->
-            <div id="modeScratchView" class="hidden">
-                <div class="card scratch-card">
-                    <div class="card-header">
-                        <h2><i class="fa-solid fa-user-pen"></i> Enter Profile Details</h2>
-                        <span class="help-text">No existing resume needed</span>
-                    </div>
-
-                    <div class="form-tabs">
-                        <button class="tab-btn active" data-tab="tabPersonal">Personal</button>
-                        <button class="tab-btn" data-tab="tabSummary">Summary</button>
-                        <button class="tab-btn" data-tab="tabSkills">Skills</button>
-                        <button class="tab-btn" data-tab="tabExp">Experience</button>
-                        <button class="tab-btn" data-tab="tabProjects">Projects</button>
-                    </div>
-
-                    <form id="scratchForm" class="form-body">
-                        <!-- Personal Info Tab -->
-                        <div class="tab-content active" id="tabPersonal">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Full Name</label>
-                                    <input type="text" id="scratchName" value="Suraj Vishwakarma" placeholder="e.g. Suraj Vishwakarma">
-                                </div>
-                                <div class="form-group">
-                                    <label>Location</label>
-                                    <input type="text" id="scratchLoc" value="Dombivli, Mumbai" placeholder="e.g. Mumbai, India">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" id="scratchEmail" value="svishwakarma9322@gmail.com">
-                                </div>
-                                <div class="form-group">
-                                    <label>Phone</label>
-                                    <input type="text" id="scratchPhone" value="+91 9324316769">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>LinkedIn</label>
-                                    <input type="text" id="scratchLinkedin" value="https://linkedin.com/in/surajvishwakarma11">
-                                </div>
-                                <div class="form-group">
-                                    <label>GitHub / Portfolio</label>
-                                    <input type="text" id="scratchGithub" value="https://github.com/Suraj6769">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Summary Tab -->
-                        <div class="tab-content" id="tabSummary">
-                            <div class="form-group">
-                                <label>Professional Summary</label>
-                                <textarea id="scratchSummary" rows="4">Quantitative Data Scientist with a strong foundation in Statistics and Financial Risk Modeling. Experienced in building predictive models for loss estimation, customer behavior, and generative AI systems.</textarea>
-                            </div>
-                        </div>
-
-                        <!-- Skills Tab -->
-                        <div class="tab-content" id="tabSkills">
-                            <div class="form-group">
-                                <label>Domains</label>
-                                <input type="text" id="scratchDomains" value="Financial Risk Modeling, Predictive Analytics, NLP, LLMs, Credit Scoring">
-                            </div>
-                            <div class="form-group">
-                                <label>Languages</label>
-                                <input type="text" id="scratchLanguages" value="Python, R, SQL, SAS">
-                            </div>
-                            <div class="form-group">
-                                <label>Libraries & Frameworks</label>
-                                <input type="text" id="scratchLibraries" value="Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch, LangChain">
-                            </div>
-                            <div class="form-group">
-                                <label>Tools & Platforms</label>
-                                <input type="text" id="scratchTools" value="Power BI, Tableau, AWS, Streamlit, Git">
-                            </div>
-                        </div>
-
-                        <!-- Experience Tab -->
-                        <div class="tab-content" id="tabExp">
-                            <div class="form-group">
-                                <label>Experience Entry 1</label>
-                                <input type="text" id="scratchExpRole1" value="AI Engineer, PSS (May 2026 -- Present)">
-                                <textarea id="scratchExpBullets1" rows="3">Leveraged GenAI to optimize recruitment finance, reducing manual screening costs.\nBuilt an LLM-based resume recommendation system improving hiring pipeline velocity by 20%.</textarea>
-                            </div>
-                        </div>
-
-                        <!-- Projects Tab -->
-                        <div class="tab-content" id="tabProjects">
-                            <div class="form-group">
-                                <label>Project Entry 1</label>
-                                <input type="text" id="scratchProjTitle1" value="Credit Risk Modeling & Loan Default Prediction (2024)">
-                                <textarea id="scratchProjBullets1" rows="3">Built an end-to-end ML pipeline (XGBoost, Random Forest) to predict borrower default probability.\nImpact: Achieved 89% AUC-ROC, potential to reduce NPL ratios by 15%.</textarea>
-                            </div>
-                        </div>
-
-                        <!-- Optional JD Input for Scratch Mode -->
-                        <div class="form-group optional-jd">
-                            <label><i class="fa-solid fa-bullseye"></i> Optional Target Job Description (For Auto-Tailoring)</label>
-                            <textarea id="scratchJdInput" rows="2" placeholder="Paste JD here if you want DeepSeek to auto-tailor this profile..."></textarea>
-                        </div>
-
-                        <button type="button" id="btnGenerateScratch" class="btn-primary">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Build & Compile PDF
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Pipeline Status Progress Tracker -->
-            <div class="card status-card hidden" id="pipelineCard">
-                <h3><i class="fa-solid fa-bars-progress"></i> Generation Pipeline</h3>
-                <div class="steps-container">
-                    <div class="step" id="step1">
-                        <div class="step-icon"><i class="fa-solid fa-circle-check"></i></div>
-                        <div class="step-label">Parsing & Extracting Profile</div>
-                    </div>
-                    <div class="step" id="step2">
-                        <div class="step-icon"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
-                        <div class="step-label">DeepSeek AI Tailoring</div>
-                    </div>
-                    <div class="step" id="step3">
-                        <div class="step-icon"><i class="fa-solid fa-file-pdf"></i></div>
-                        <div class="step-label">LaTeX PDF Compilation</div>
-                    </div>
-                    <div class="step" id="step4">
-                        <div class="step-icon"><i class="fa-solid fa-flag-checkered"></i></div>
-                        <div class="step-label">1-Page PDF Ready!</div>
-                    </div>
-                </div>
-            </div>
-
         </section>
 
-        <!-- Right Panel: PDF Preview & LaTeX Code Viewer -->
-        <section class="panel preview-panel">
-            <div class="preview-header">
-                <div class="tabs">
-                    <button class="tab-btn active" id="tabPreviewBtn">
-                        <i class="fa-solid fa-eye"></i> Tailored PDF Preview
-                    </button>
-                    <button class="tab-btn" id="tabCodeBtn">
-                        <i class="fa-solid fa-code"></i> LaTeX Source Code
-                    </button>
-                </div>
+        <!-- SECTION 2: SIDE-BY-SIDE STUDIO WORKSPACE -->
+        <section class="section-container" id="studioSection">
+            <div class="section-meta-header">
+                <span class="section-number">02 WORKSPACE STUDIO</span>
+                <span class="section-count">LIVE AI CONVERTER</span>
+            </div>
 
-                <div class="preview-actions">
-                    <button id="btnCopyCode" class="btn-secondary hidden" title="Copy LaTeX Code">
-                        <i class="fa-solid fa-copy"></i> Copy Code
-                    </button>
-                    <a id="btnDownload" class="btn-success disabled" download="Tailored_Resume.pdf" href="#">
-                        <i class="fa-solid fa-download"></i> Download PDF
-                    </a>
+            <div class="studio-header">
+                <div>
+                    <h2 class="section-title">AI Resume Generator & Tailor</h2>
+                    <p class="section-desc">Selected Template: <strong id="activeTemplateName">Jake Ryan (ATS Standard)</strong></p>
+                </div>
+                <div class="mode-pills">
+                    <button class="mode-pill active" id="modeTailorBtn"><i class="fa-solid fa-bullseye"></i> Tailor to JD</button>
+                    <button class="mode-pill" id="modeScratchBtn"><i class="fa-solid fa-pen-ruler"></i> Build from Scratch</button>
                 </div>
             </div>
 
-            <!-- PDF Viewer Frame -->
-            <div class="preview-body" id="previewContainer">
-                <div class="empty-state" id="pdfPlaceholder">
-                    <div class="empty-icon">
-                        <i class="fa-regular fa-file-pdf"></i>
+            <div class="workspace-grid">
+                
+                <!-- Left Input Panel -->
+                <div class="workspace-panel input-panel">
+                    
+                    <!-- Upload Resume Box -->
+                    <div class="panel-card upload-card">
+                        <div class="card-title"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Existing Resume (Optional)</div>
+                        <div class="dropzone" id="resumeDropZone">
+                            <i class="fa-solid fa-file-pdf dropzone-icon"></i>
+                            <div class="dropzone-text">Drag & drop your <strong>PDF, DOCX, or TEX</strong> file here</div>
+                            <div class="dropzone-hint" id="resumeFileInfo">Supports .pdf, .docx, .tex (DeepSeek auto-extracts your text)</div>
+                            <input type="file" id="resumeFileInput" accept=".pdf,.docx,.doc,.tex,.txt" hidden>
+                        </div>
                     </div>
-                    <h3>Your Compiled 1-Page PDF Will Appear Here</h3>
-                    <p>Select a template, enter/upload your resume or job description, and click <strong>Generate</strong>.</p>
+
+                    <!-- Job Description Panel (Tailor Mode) -->
+                    <div class="panel-card" id="tailorInputCard">
+                        <div class="card-title-row">
+                            <div class="card-title"><i class="fa-solid fa-briefcase"></i> Target Job Description</div>
+                            <div class="model-select-wrapper">
+                                <i class="fa-solid fa-robot"></i>
+                                <select id="modelSelect">
+                                    <option value="deepseek/deepseek-chat" selected>DeepSeek V3 (Fast)</option>
+                                    <option value="deepseek/deepseek-r1">DeepSeek R1 (Reasoning)</option>
+                                    <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <textarea id="jdInput" placeholder="Paste target Job Description here to customize Summary, Technical Skills, and Projects..."></textarea>
+
+                        <div class="sample-chips-row">
+                            <span class="chip-label">Sample JDs:</span>
+                            <button class="sample-chip" data-sample="quant">Quant Risk Analyst</button>
+                            <button class="sample-chip" data-sample="genai">GenAI & LLM Engineer</button>
+                            <button class="sample-chip" data-sample="datasci">Senior Data Scientist</button>
+                        </div>
+
+                        <button class="btn-generate-main" id="btnGenerate">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate & Compile PDF
+                        </button>
+                    </div>
+
+                    <!-- Scratch Profile Form (Scratch Mode) -->
+                    <div class="panel-card hidden" id="scratchInputCard">
+                        <div class="card-title"><i class="fa-solid fa-user-pen"></i> Scratch Profile Information</div>
+                        
+                        <div class="scratch-form-grid">
+                            <div class="form-field">
+                                <label>Full Name</label>
+                                <input type="text" id="scratchName" value="Suraj Vishwakarma">
+                            </div>
+                            <div class="form-field">
+                                <label>Location</label>
+                                <input type="text" id="scratchLoc" value="Dombivli, Mumbai">
+                            </div>
+                            <div class="form-field">
+                                <label>Email</label>
+                                <input type="email" id="scratchEmail" value="svishwakarma9322@gmail.com">
+                            </div>
+                            <div class="form-field">
+                                <label>Phone</label>
+                                <input type="text" id="scratchPhone" value="+91 9324316769">
+                            </div>
+                            <div class="form-field full-width">
+                                <label>Summary</label>
+                                <textarea id="scratchSummary" rows="3">Quantitative Data Scientist with a strong foundation in Statistics and Financial Risk Modeling. Experienced in predictive modeling, loss estimation, and generative AI systems.</textarea>
+                            </div>
+                        </div>
+
+                        <button class="btn-generate-main" id="btnGenerateScratch">
+                            <i class="fa-solid fa-bolt-lightning"></i> Build & Compile PDF
+                        </button>
+                    </div>
+
                 </div>
 
-                <iframe id="pdfFrame" class="hidden" src="" frameborder="0"></iframe>
+                <!-- Right Live Preview Panel -->
+                <div class="workspace-panel preview-panel">
+                    <div class="preview-bar">
+                        <div class="preview-tabs">
+                            <button class="prev-tab active" id="tabPdfBtn"><i class="fa-solid fa-file-pdf"></i> Compiled PDF Preview</button>
+                            <button class="prev-tab" id="tabCodeBtn"><i class="fa-solid fa-code"></i> LaTeX Source Code</button>
+                        </div>
+                        <div class="preview-actions">
+                            <button class="btn-icon-action hidden" id="btnCopyCode" title="Copy Code"><i class="fa-solid fa-copy"></i></button>
+                            <a href="#" class="btn-download-action disabled" id="btnDownload" download="Resume.pdf">
+                                <i class="fa-solid fa-download"></i> Download PDF
+                            </a>
+                        </div>
+                    </div>
 
-                <div id="codeView" class="hidden">
-                    <textarea id="latexCodeEditor" readonly></textarea>
+                    <div class="preview-viewport">
+                        <div class="preview-placeholder" id="pdfPlaceholder">
+                            <div class="placeholder-icon"><i class="fa-regular fa-file-pdf"></i></div>
+                            <h3>Your Compiled 1-Page PDF Preview Will Render Here</h3>
+                            <p>Choose a template from above, enter your profile or Job Description, and click <strong>Generate</strong>.</p>
+                        </div>
+
+                        <iframe id="pdfFrame" class="hidden" src="" frameborder="0"></iframe>
+
+                        <div class="code-container hidden" id="codeView">
+                            <textarea id="latexCodeEditor" readonly></textarea>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </section>
 
     </main>
 
-    <!-- Toast Notification Popup -->
+    <!-- Toast Notification -->
     <div id="toast" class="toast hidden">
-        <i class="toast-icon fa-solid fa-check-circle"></i>
+        <i class="toast-icon fa-solid fa-circle-check"></i>
         <span id="toastMsg">Notification message</span>
     </div>
 

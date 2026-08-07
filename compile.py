@@ -7,9 +7,269 @@ import urllib.request
 import uuid
 
 # ==============================================================================
-# TEMPLATE 1: CLASSIC EXECUTIVE (Single Column, Charter Font, Clean Divider Lines)
+# TEMPLATE 1: JAKE RYAN (Jake Gutierrez ATS Resume - POPULAR)
 # ==============================================================================
-TEMPLATE_CLASSIC_EXECUTIVE = r"""
+TEMPLATE_JAKE_RYAN = r"""
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+\pdfgentounicode=1
+
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Huge \scshape {{NAME}}} \\ \vspace{1pt}
+    \small {{CONTACT_LINE}}
+\end{center}
+
+\section{Summary}
+\small{{{SUMMARY_SECTION}}}
+
+\section{Education}
+  \resumeSubHeadingListStart
+{{EDUCATION_SECTION}}
+  \resumeSubHeadingListEnd
+
+\section{Experience}
+  \resumeSubHeadingListStart
+{{EXPERIENCE_SECTION}}
+  \resumeSubHeadingListEnd
+
+\section{Projects}
+  \resumeSubHeadingListStart
+{{PROJECTS_SECTION}}
+  \resumeSubHeadingListEnd
+
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+{{SKILLS_SECTION}}
+    }}
+ \end{itemize}
+
+\end{document}
+"""
+
+# ==============================================================================
+# TEMPLATE 2: DEEDY RESUME (Deedy OpenFont 2-Column Sidebar Layout)
+# ==============================================================================
+TEMPLATE_DEEDY_RESUME = r"""
+\documentclass[10pt,letterpaper]{article}
+\usepackage[top=0.5in,bottom=0.5in,left=0.65in,right=0.65in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{paracol}
+\setlength{\parindent}{0pt}
+\pagestyle{empty}
+
+\definecolor{primary}{HTML}{2b2b2b}
+\definecolor{headings}{HTML}{6A6A6A}
+\definecolor{subheadings}{HTML}{333333}
+
+\titleformat{\section}{\color{primary}\scshape\raggedright\large}{}{0em}{}
+\titleformat{\subsection}{\color{subheadings}\bfseries\small}{}{0em}{}
+
+\begin{document}
+
+\centerline{\Huge\bfseries {{NAME}}}
+\vspace{4pt}
+\centerline{\small {{CONTACT_LINE}}}
+
+\vspace{10pt}
+\setcolumnwidth{0.32\textwidth, 0.65\textwidth}
+\begin{paracol}{2}
+
+\section*{Education}
+{{EDUCATION_SIDEBAR}}
+
+\vspace{4pt}
+\section*{Skills}
+{{SKILLS_SIDEBAR}}
+
+\vspace{4pt}
+\section*{Certifications}
+{{CERTIFICATIONS_SIDEBAR}}
+
+\switchcolumn
+
+\section*{Summary}
+{\small {{SUMMARY_SECTION}}}
+
+\vspace{4pt}
+\section*{Experience}
+{{EXPERIENCE_SECTION}}
+
+\vspace{4pt}
+\section*{Projects}
+{{PROJECTS_SECTION}}
+
+\end{paracol}
+
+\end{document}
+"""
+
+# ==============================================================================
+# TEMPLATE 3: MODERN CLASSIC (Jan Küster Raleway Font Template)
+# ==============================================================================
+TEMPLATE_MODERN_CLASSIC = r"""
+\documentclass[10pt,letterpaper]{article}
+\usepackage[top=0.6 cm, bottom=0.6 cm, left=1.0 cm, right=1.0 cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{xcolor}
+\definecolor{primaryColor}{RGB}{30, 41, 59}
+\definecolor{accentColor}{RGB}{37, 99, 235}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, urlcolor=accentColor}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\linespread{0.96}\selectfont
+
+\titleformat{\section}{\color{primaryColor}\scshape\large\bfseries}{}{0pt}{}[\vspace{1pt}\hrule height 1pt color primaryColor]
+\titlespacing{\section}{0pt}{0.06 cm}{0.04 cm}
+
+\begin{document}
+
+\begin{center}
+    {\Huge \bfseries \color{primaryColor} {{NAME}}}\\[3pt]
+    {\small \color{accentColor} {{CONTACT_LINE}}}
+\end{center}
+
+\vspace{-0.1cm}
+
+\section{Summary}
+{\small {{SUMMARY_SECTION}}}
+
+\section{Technical Skills}
+{{SKILLS_SECTION}}
+
+\section{Professional Experience}
+{{EXPERIENCE_SECTION}}
+
+\section{Academic \& Personal Projects}
+{{PROJECTS_SECTION}}
+
+\section{Education}
+{{EDUCATION_SECTION}}
+
+\end{document}
+"""
+
+# ==============================================================================
+# TEMPLATE 4: ACADEMIC CV (Zoe Kearney Formal Dossier Template)
+# ==============================================================================
+TEMPLATE_ACADEMIC_CV = r"""
+\documentclass[a4paper,9pt]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=0.75in}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{changepage}
+
+\setlist{noitemsep}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{0.6\baselineskip}{0.4\baselineskip}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \bfseries {{NAME}}}\\[3pt]
+    {\small {{CONTACT_LINE}}}
+\end{center}
+
+\section{Executive Summary}
+{{SUMMARY_SECTION}}
+
+\section{Education \& Qualifications}
+{{EDUCATION_SECTION}}
+
+\section{Professional Appointments \& Experience}
+{{EXPERIENCE_SECTION}}
+
+\section{Research Projects \& Innovations}
+{{PROJECTS_SECTION}}
+
+\section{Technical Skills \& Competencies}
+{{SKILLS_SECTION}}
+
+\end{document}
+"""
+
+# ==============================================================================
+# TEMPLATE 5: EXECUTIVE CHARTER (Charter Font Single-Column)
+# ==============================================================================
+TEMPLATE_EXECUTIVE_CHARTER = r"""
 \documentclass[9.5pt, letterpaper]{article}
 
 \usepackage[
@@ -151,288 +411,67 @@ TEMPLATE_CLASSIC_EXECUTIVE = r"""
 \end{document}
 """
 
-# ==============================================================================
-# TEMPLATE 2: MODERN MINIMALIST (Sleek Sans-Serif, Navy Accent Headers)
-# ==============================================================================
-TEMPLATE_MODERN_MINIMALIST = r"""
-\documentclass[9.5pt, letterpaper]{article}
-
-\usepackage[
-    top=0.65 cm,
-    bottom=0.65 cm,
-    left=1.0 cm,
-    right=1.0 cm,
-]{geometry}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{helvet}
-\renewcommand{\familydefault}{\sfdefault}
-\usepackage{xcolor}
-\definecolor{navyAccent}{RGB}{15, 32, 67}
-\definecolor{darkText}{RGB}{30, 30, 30}
-\usepackage{enumitem}
-\usepackage{titlesec}
-\usepackage{tabularx}
-\usepackage{hyperref}
-\hypersetup{colorlinks=true, urlcolor=navyAccent}
-
-\pagestyle{empty}
-\setlength{\parindent}{0pt}
-\linespread{0.96}\selectfont
-
-\titleformat{\section}{\color{navyAccent}\bfseries\large\uppercase}{}{0pt}{}[\vspace{1pt}\hrule height 1pt color navyAccent]
-\titlespacing{\section}{0pt}{0.06 cm}{0.04 cm}
-
-\newenvironment{customitem}{
-    \begin{itemize}[topsep=0pt, parsep=0pt, itemsep=0.5pt, leftmargin=12pt]
-}{
-    \end{itemize}
-}
-
-\begin{document}
-
-\begin{center}
-    {\Huge \bfseries \color{navyAccent} {{NAME}}}\\[3pt]
-    {\small \color{darkText} {{CONTACT_LINE}}}
-\end{center}
-
-\vspace{-0.1cm}
-
-\section{Professional Summary}
-{\small {{SUMMARY_SECTION}}}
-
-\section{Technical Skills}
-{{SKILLS_SECTION}}
-
-\section{Professional Experience}
-{{EXPERIENCE_SECTION}}
-
-\section{Projects}
-{{PROJECTS_SECTION}}
-
-\section{Education}
-{{EDUCATION_SECTION}}
-
-\section{Certifications}
-\begin{customitem}
-{{CERTIFICATIONS_SECTION}}
-\end{customitem}
-
-\end{document}
-"""
-
-# ==============================================================================
-# TEMPLATE 3: TECH SIDEBAR (2-Column Layout with Skills Sidebar)
-# ==============================================================================
-TEMPLATE_TECH_SIDEBAR = r"""
-\documentclass[9.5pt, letterpaper]{article}
-\usepackage[top=0.6 cm, bottom=0.6 cm, left=0.8 cm, right=0.8 cm]{geometry}
-\usepackage{paracol}
-\usepackage{xcolor}
-\usepackage{enumitem}
-\usepackage{titlesec}
-\usepackage{hyperref}
-\usepackage{lmodern}
-
-\definecolor{sidebarBg}{RGB}{245, 247, 250}
-\definecolor{techBlue}{RGB}{20, 80, 160}
-
-\pagestyle{empty}
-\setlength{\parindent}{0pt}
-\linespread{0.95}\selectfont
-
-\titleformat{\section}{\color{techBlue}\bfseries\large}{}{0pt}{}[\vspace{1pt}\hrule height 0.8pt color techBlue]
-\titlespacing{\section}{0pt}{0.05 cm}{0.03 cm}
-
-\setcolumnwidth{5.2 cm, \fill}
-\setlength{\columnsep}{0.4 cm}
-
-\begin{document}
-
-\begin{paracol}{2}
-
-% --- LEFT SIDEBAR ---
-\begin{center}
-    {\Large \bfseries \color{techBlue} {{NAME}}}\\[3pt]
-    {\footnotesize {{CONTACT_SIDEBAR}}}
-\end{center}
-
-\vspace{0.1 cm}
-
-\section{Skills}
-{{SKILLS_SIDEBAR}}
-
-\vspace{0.1 cm}
-
-\section{Education}
-{{EDUCATION_SIDEBAR}}
-
-\vspace{0.1 cm}
-
-\section{Certifications}
-\begin{itemize}[leftmargin=8pt, topsep=0pt, itemsep=1pt]
-{{CERTIFICATIONS_SECTION}}
-\end{itemize}
-
-% --- MAIN COLUMN ---
-\switchcolumn
-
-\section{Summary}
-{\small {{SUMMARY_SECTION}}}
-
-\section{Experience}
-{{EXPERIENCE_SECTION}}
-
-\section{Projects}
-{{PROJECTS_SECTION}}
-
-\end{paracol}
-
-\end{document}
-"""
-
-# ==============================================================================
-# TEMPLATE 4: ACADEMIC FORMAL (Serif, Classic Research Format)
-# ==============================================================================
-TEMPLATE_ACADEMIC_FORMAL = r"""
-\documentclass[10pt, letterpaper]{article}
-
-\usepackage[top=0.7 cm, bottom=0.7 cm, left=1.1 cm, right=1.1 cm]{geometry}
-\usepackage{titlesec}
-\usepackage{enumitem}
-\usepackage{hyperref}
-\usepackage{mathptmx} % Times New Roman style font
-
-\pagestyle{empty}
-\setlength{\parindent}{0pt}
-\linespread{0.98}\selectfont
-
-\titleformat{\section}{\scshape\large\bfseries}{}{0pt}{}[\vspace{1pt}\hrule height 0.5pt]
-\titlespacing{\section}{0pt}{0.08 cm}{0.04 cm}
-
-\begin{document}
-
-\begin{center}
-    {\LARGE \scshape \bfseries {{NAME}}}\\[4pt]
-    {\small {{CONTACT_LINE}}}
-\end{center}
-
-\section{Summary}
-{{SUMMARY_SECTION}}
-
-\section{Technical & Analytical Skills}
-{{SKILLS_SECTION}}
-
-\section{Professional Experience}
-{{EXPERIENCE_SECTION}}
-
-\section{Research & Academic Projects}
-{{PROJECTS_SECTION}}
-
-\section{Education}
-{{EDUCATION_SECTION}}
-
-\section{Certifications}
-\begin{itemize}[topsep=0pt, itemsep=1pt, leftmargin=12pt]
-{{CERTIFICATIONS_SECTION}}
-\end{itemize}
-
-\end{document}
-"""
-
 # Registry of Available Templates
 TEMPLATES_REGISTRY = {
-    "classic_executive": {
-        "id": "classic_executive",
-        "name": "Classic Executive",
-        "tag": "Charter Serif / Official Standard",
-        "description": "Clean single-column professional resume layout with elegant Charter font and subtle dividing lines.",
-        "latex_template": TEMPLATE_CLASSIC_EXECUTIVE
+    "jake_ryan": {
+        "id": "jake_ryan",
+        "name": "Jake Ryan (ATS Standard)",
+        "tag": "POPULAR • ATS #1 CHOICE",
+        "badge": "MOST POPULAR",
+        "preview_img": "/static/jake_preview.png",
+        "description": "The world-famous Jake Gutierrez clean single-column ATS resume layout used by top FAANG software engineers.",
+        "latex_template": TEMPLATE_JAKE_RYAN
     },
-    "modern_minimalist": {
-        "id": "modern_minimalist",
-        "name": "Modern Minimalist",
-        "tag": "Sans-Serif / Navy Accent",
-        "description": "Ultra-sleek modern layout with bold navy headers, Helvetica typography, and high readability.",
-        "latex_template": TEMPLATE_MODERN_MINIMALIST
+    "deedy_resume": {
+        "id": "deedy_resume",
+        "name": "Deedy Resume (2-Column)",
+        "tag": "2-COLUMN TECH SIDEBAR",
+        "badge": "TECH FAVORITE",
+        "preview_img": "/static/deedy_preview.png",
+        "description": "The iconic Deedy 2-column layout with left sidebar for education/skills and main column for experience.",
+        "latex_template": TEMPLATE_DEEDY_RESUME
     },
-    "tech_sidebar": {
-        "id": "tech_sidebar",
-        "name": "Tech & Developer Sidebar",
-        "tag": "2-Column Sidebar Layout",
-        "description": "Distinctive 2-column format featuring a left sidebar for skills, contact, and education alongside a main project column.",
-        "latex_template": TEMPLATE_TECH_SIDEBAR
+    "modern_classic": {
+        "id": "modern_classic",
+        "name": "Modern Classic (Raleway)",
+        "tag": "MODERN • BLUE ACCENT",
+        "badge": "SLEEK",
+        "preview_img": "/static/modern_classic_preview.png",
+        "description": "Jan Küster clean modern layout with Raleway typography and blue accent dividing lines.",
+        "latex_template": TEMPLATE_MODERN_CLASSIC
     },
-    "academic_formal": {
-        "id": "academic_formal",
-        "name": "Academic & Research Formal",
-        "tag": "Times Serif / Publication Style",
-        "description": "Classic academic research format utilizing Times font and small-cap section headers.",
-        "latex_template": TEMPLATE_ACADEMIC_FORMAL
+    "academic_cv": {
+        "id": "academic_cv",
+        "name": "Academic & Research CV",
+        "tag": "ACADEMIC • DOSSIER STYLE",
+        "badge": "FORMAL",
+        "preview_img": "/static/academic_preview.png",
+        "description": "Zoe Kearney formal university dossier format ideal for research, statistics, and academic roles.",
+        "latex_template": TEMPLATE_ACADEMIC_CV
+    },
+    "classic_charter": {
+        "id": "classic_charter",
+        "name": "Executive Charter",
+        "tag": "CHARTER SERIF • OFFICIAL",
+        "badge": "EXECUTIVE",
+        "preview_img": "/static/charter_preview.png",
+        "description": "Clean executive single-column layout with Charter font, paracol dates, and tight vertical geometry.",
+        "latex_template": TEMPLATE_EXECUTIVE_CHARTER
     }
 }
 
-BASE_LATEX_TEMPLATE = TEMPLATE_CLASSIC_EXECUTIVE
+DEFAULT_SUMMARY_LATEX = r"""Quantitative Data Scientist with a strong foundation in Statistics and Financial Risk Modeling. Experienced in building predictive models for loss estimation, customer behavior, and generative AI systems."""
 
-DEFAULT_SUMMARY_LATEX = r"""        Quantitative Data Scientist with a strong foundation in Statistics and Financial Risk Modeling. Experienced in building predictive models for loss estimation, customer behavior, and generative AI systems. Proficient in Python, SQL, and cloud platforms. Skilled in translating complex financial data into actionable business insights to drive revenue growth and mitigate risk."""
+DEFAULT_SKILLS_LATEX = r"""\textbf{Domains:} Financial Risk Modeling, Predictive Analytics, NLP, LLMs \\
+\textbf{Languages:} Python, R, SQL, SAS \\
+\textbf{Libraries:} Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch, LangChain \\
+\textbf{Tools:} Power BI, Tableau, AWS, Streamlit, Git"""
 
-DEFAULT_SKILLS_LATEX = r"""    \begin{onecolentry}
-        \textbf{Domains:} Financial Risk Modeling, Predictive Analytics, NLP, LLMs, Quantitative Research, Credit Scoring, Time-Series Analysis.
-    \end{onecolentry}
-    \vspace{0.01 cm}
-    \begin{onecolentry}
-        \textbf{Languages:} Python, R, SQL, SAS.
-    \end{onecolentry}
-    \vspace{0.01 cm}
-    \begin{onecolentry}
-        \textbf{Libraries:} Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch, LangChain, Statsmodels, Hugging Face, Transformers.
-    \end{onecolentry}
-    \vspace{0.01 cm}
-    \begin{onecolentry}
-        \textbf{Tools:} Power BI, Tableau, AWS, Streamlit, Git, RMS, AIR, CatRisk.
-    \end{onecolentry}"""
+DEFAULT_PROJECTS_LATEX = r"""\textbf{Credit Risk Modeling \& Loan Default Prediction} \hfill 2024\\
+Built an end-to-end machine learning pipeline (XGBoost, Random Forest) to predict borrower default probability."""
 
-DEFAULT_PROJECTS_LATEX = r"""    \begin{twocolentry}{2024}
-        \textbf{Credit Risk Modeling \& Loan Default Prediction}
-    \end{twocolentry}
-    \vspace{0.01 cm}
-    \begin{onecolentry}
-        \begin{highlights}
-            \item Built an end-to-end machine learning pipeline (XGBoost, Random Forest, Logistic Regression) to predict borrower default probability using synthetic banking datasets.
-            \item Applied advanced feature engineering (debt-to-income ratios, credit utilization) and handled severe class imbalance using SMOTE-ENN to minimize false negatives, which carry high financial costs for lenders.
-            \item \textbf{Impact:} Achieved an 89\% AUC-ROC, with the potential to reduce non-performing loan (NPL) ratios by 15\% through early identification of high-risk accounts.
-        \end{highlights}
-    \end{onecolentry}
-
-    \vspace{0.01 cm}
-
-    \begin{twocolentry}{2024}
-        \textbf{Financial Time-Series Forecasting \& Volatility Modeling}
-    \end{twocolentry}
-    \vspace{0.01 cm}
-    \begin{onecolentry}
-        \begin{highlights}
-            \item Developed a hybrid ARIMA-LSTM model to forecast stock price movements and market volatility using historical S\&P 500 and Forex data.
-            \item Implemented GARCH models to statistically analyze volatility clustering and heteroskedasticity in asset returns, providing robust risk estimates for algorithmic trading strategies.
-            \item \textbf{Impact:} Improved directional forecasting accuracy by 7\% over traditional econometric models, enabling better timing for portfolio rebalancing and hedging decisions.
-        \end{highlights}
-    \end{onecolentry}
-
-    \vspace{0.01 cm}
-
-    \begin{twocolentry}{2024}
-        \textbf{Customer Lifetime Value (LTV) \& Churn Analytics (Banking)}
-    \end{twocolentry}
-    \vspace{0.01 cm}
-    \begin{onecolentry}
-        \begin{highlights}
-            \item Engineered ensemble ML models (Gradient Boosting, SVM) to predict customer churn in the retail banking sector, focusing on high-net-worth individuals.
-            \item Performed PCA for dimensionality reduction and integrated behavioral transaction data to generate personalized retention strategies.
-            \item \textbf{Impact:} Achieved 91\% prediction accuracy; implementing the model could increase overall portfolio profitability by 6\% by proactively retaining at-risk, high-value clients with targeted offers.
-        \end{highlights}
-    \end{onecolentry}"""
-
-BASE_LATEX_CODE = BASE_LATEX_TEMPLATE.replace("{{SUMMARY_SECTION}}", DEFAULT_SUMMARY_LATEX).replace("{{SKILLS_SECTION}}", DEFAULT_SKILLS_LATEX).replace("{{PROJECTS_SECTION}}", DEFAULT_PROJECTS_LATEX).replace("{{NAME}}", "Suraj Vishwakarma").replace("{{CONTACT_LINE}}", "Dombivli, Mumbai | svishwakarma9322@gmail.com | +91 9324316769 | LinkedIn | GitHub").replace("{{EXPERIENCE_SECTION}}", "").replace("{{EDUCATION_SECTION}}", "").replace("{{CERTIFICATIONS_SECTION}}", "")
+BASE_LATEX_TEMPLATE = TEMPLATE_JAKE_RYAN
+BASE_LATEX_CODE = TEMPLATE_JAKE_RYAN.replace("{{SUMMARY_SECTION}}", DEFAULT_SUMMARY_LATEX).replace("{{SKILLS_SECTION}}", DEFAULT_SKILLS_LATEX).replace("{{PROJECTS_SECTION}}", DEFAULT_PROJECTS_LATEX).replace("{{NAME}}", "Suraj Vishwakarma").replace("{{CONTACT_LINE}}", "Dombivli, Mumbai $|$ svishwakarma9322@gmail.com $|$ +91 9324316769 $|$ LinkedIn $|$ GitHub").replace("{{EDUCATION_SECTION}}", "").replace("{{EXPERIENCE_SECTION}}", "")
 
 def find_latex_compiler():
     """Look for local LaTeX compilers in PATH and common installation directories."""
