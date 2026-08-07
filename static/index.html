@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Underleaf — The LaTeX resume, done right.</title>
+    <title>Texora — Professional Resumes. Made Simple.</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,41 +19,109 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="#" class="brand-logo">
-                <div class="brand-icon"><i class="fa-solid fa-leaf"></i></div>
-                <span class="brand-name">Underleaf</span>
+                <div class="brand-icon"><i class="fa-solid fa-certificate"></i></div>
+                <span class="brand-name">Texora</span>
             </a>
 
             <div class="nav-links">
-                <a href="#templatesSection" class="nav-item active">Free Templates</a>
-                <a href="#studioSection" class="nav-item">AI Conversion</a>
-                <a href="#" class="nav-item">Tools <i class="fa-solid fa-chevron-down"></i></a>
+                <a href="#templatesSection" class="nav-item active">Templates</a>
+                <a href="#studioSection" class="nav-item">AI Tools</a>
+                <a href="#templatesSection" class="nav-item">Examples</a>
+                <a href="#" class="nav-item">Pricing</a>
+                <a href="#" class="nav-item">Resources <i class="fa-solid fa-chevron-down"></i></a>
             </div>
 
             <div class="nav-actions">
-                <!-- API Key Security Badge / Input Bar -->
-                <div class="api-key-box" id="apiKeyBox">
-                    <i class="fa-solid fa-lock" id="apiKeyIcon"></i>
-                    <span id="envKeyBadge" class="env-key-badge hidden"><i class="fa-solid fa-circle-check"></i> API Key Active</span>
-                    <input type="password" id="apiKey" placeholder="OpenRouter Key..." autocomplete="off">
-                    <button id="toggleKeyBtn" class="btn-eye" title="Toggle visibility"><i class="fa-solid fa-eye"></i></button>
-                </div>
-                <button class="btn-nav-primary" id="btnTryFree">Try Free <i class="fa-solid fa-arrow-right"></i></button>
+                <div class="no-signup-badge"><i class="fa-solid fa-shield-halved text-success"></i> No Sign-Up Required</div>
+                <button class="btn-nav-purple" id="btnGetStarted">Get Started Free <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Texora Hero Section (Split Layout) -->
     <section class="hero-section">
-        <div class="hero-badge">FREE TEMPLATES • AI CONVERSION</div>
-        <h1 class="hero-title">The LaTeX resume, <span class="hero-gradient">done right.</span></h1>
-        <p class="hero-subtitle">Pick a free, ATS-friendly LaTeX resume template — or upload the resume you already have and let AI convert it to clean LaTeX.</p>
+        <div class="hero-split">
+            
+            <!-- Left Hero Column -->
+            <div class="hero-content">
+                <div class="hero-tag-badge">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> LaTeX Made Effortless
+                </div>
+                <h1 class="hero-title">
+                    Professional Resumes.<br>
+                    <span class="purple-gradient">Made Simple.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Create ATS-friendly LaTeX resumes in minutes — no coding, no hassle. Choose a template, fill in your details, and download a beautiful, professional resume.
+                </p>
 
-        <div class="hero-cta-group">
-            <a href="#templatesSection" class="btn-hero-primary">Browse Templates <i class="fa-solid fa-arrow-right"></i></a>
-            <button class="btn-hero-secondary" id="btnConvertHero">Convert Your Resume <i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                <div class="hero-cta-group">
+                    <a href="#templatesSection" class="btn-hero-purple"><i class="fa-solid fa-receipt"></i> Explore Templates</a>
+                    <button class="btn-hero-outline" id="btnBuildAiHero"><i class="fa-solid fa-wand-magic-sparkles"></i> Build with AI</button>
+                </div>
+
+                <!-- Feature Icons Row -->
+                <div class="hero-features-row">
+                    <div class="feature-item">
+                        <div class="feat-icon"><i class="fa-solid fa-shield"></i></div>
+                        <div>
+                            <div class="feat-title">ATS Optimized</div>
+                            <div class="feat-desc">Pass screening with ease</div>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feat-icon"><i class="fa-solid fa-bolt"></i></div>
+                        <div>
+                            <div class="feat-title">AI-Powered</div>
+                            <div class="feat-desc">Smart content suggestions</div>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feat-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+                        <div>
+                            <div class="feat-title">Export Ready</div>
+                            <div class="feat-desc">PDF, TEX, and more</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Hero Card Mockup -->
+            <div class="hero-preview-wrapper">
+                <div class="floating-sparkle sparkle-1">✦</div>
+                <div class="floating-sparkle sparkle-2">✦</div>
+                <div class="hero-resume-card">
+                    <div class="mock-header">
+                        <div class="mock-name">ALEX JOHNSON</div>
+                        <div class="mock-role">SOFTWARE ENGINEER</div>
+                        <div class="mock-contact">alex.johnson@email.com • (123) 456-7890 • linkedin.com/in/alexjohnson • github.com/alexjohnson</div>
+                    </div>
+                    <div class="mock-section">
+                        <div class="mock-sec-title">PROFESSIONAL SUMMARY</div>
+                        <div class="mock-text">Results-driven software engineer with 5+ years of experience building scalable web applications and leading cross-functional teams. Passionate about clean code, system design, and delivering impactful solutions.</div>
+                    </div>
+                    <div class="mock-section">
+                        <div class="mock-sec-title">EXPERIENCE</div>
+                        <div class="mock-job">
+                            <div class="mock-job-title">Senior Software Engineer <span>2021 – Present</span></div>
+                            <div class="mock-company">Tech Solutions Inc. <span>San Francisco, CA</span></div>
+                            <div class="mock-bullet">• Led a team of 5 engineers to build a microservices-based platform</div>
+                            <div class="mock-bullet">• Improved system performance by 40% through optimization</div>
+                        </div>
+                    </div>
+                    <div class="mock-section">
+                        <div class="mock-sec-title">EDUCATION</div>
+                        <div class="mock-job">
+                            <div class="mock-job-title">B.S. in Computer Science <span>2015 – 2019</span></div>
+                            <div class="mock-company">University of Technology <span>Austin, TX</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-
-        <div class="hero-guarantee"><i class="fa-regular fa-credit-card"></i> Free to use • No credit card required</div>
     </section>
 
     <!-- Main Content Container -->
@@ -61,22 +129,21 @@
         
         <!-- SECTION 1: TEMPLATE GALLERY -->
         <section class="section-container" id="templatesSection">
-            <div class="section-meta-header">
-                <span class="section-number">01 THE TEMPLATES</span>
-                <span class="section-count">5 CURATED</span>
+            <div class="section-center-meta">
+                <span class="pill-meta">Choose a Design</span>
+                <h2 class="section-title-large">Beautiful Templates for Every Style</h2>
+                <p class="section-subtitle-text">Pick a template that reflects your personality and profession.</p>
             </div>
 
-            <div class="templates-header-row">
-                <div>
-                    <h2 class="section-title">LaTeX Resume Templates</h2>
-                    <p class="section-desc">Free and fully customizable. Download the source, or fill a template with your details using AI.</p>
-                </div>
-
-                <div class="template-filter-pills">
-                    <button class="filter-btn active" data-filter="all">All Templates</button>
-                    <button class="filter-btn" data-filter="ats">ATS Popular</button>
-                    <button class="filter-btn" data-filter="tech">2-Column Tech</button>
-                </div>
+            <!-- Category Filter Pills -->
+            <div class="category-pills-row">
+                <button class="cat-pill active" data-filter="all">All</button>
+                <button class="cat-pill" data-filter="modern">Modern</button>
+                <button class="cat-pill" data-filter="classic">Classic</button>
+                <button class="cat-pill" data-filter="minimal">Minimal</button>
+                <button class="cat-pill" data-filter="creative">Creative</button>
+                <button class="cat-pill" data-filter="academic">Academic</button>
+                <button class="cat-pill" data-filter="tech">Tech</button>
             </div>
 
             <!-- Templates Card Grid -->
@@ -87,19 +154,16 @@
 
         <!-- SECTION 2: SIDE-BY-SIDE STUDIO WORKSPACE -->
         <section class="section-container" id="studioSection">
-            <div class="section-meta-header">
-                <span class="section-number">02 WORKSPACE STUDIO</span>
-                <span class="section-count">LIVE AI CONVERTER</span>
+            <div class="section-center-meta">
+                <span class="pill-meta">Workspace Studio</span>
+                <h2 class="section-title-large">AI Resume Generator & Tailor</h2>
+                <p class="section-subtitle-text">Selected Template: <strong id="activeTemplateName" class="text-purple">Suraj Executive (Detailed)</strong></p>
             </div>
 
-            <div class="studio-header">
-                <div>
-                    <h2 class="section-title">AI Resume Generator & Tailor</h2>
-                    <p class="section-desc">Selected Template: <strong id="activeTemplateName">Jake Ryan (ATS Standard)</strong></p>
-                </div>
-                <div class="mode-pills">
-                    <button class="mode-pill active" id="modeTailorBtn"><i class="fa-solid fa-bullseye"></i> Tailor to JD</button>
-                    <button class="mode-pill" id="modeScratchBtn"><i class="fa-solid fa-pen-ruler"></i> Build from Scratch</button>
+            <div class="studio-mode-bar">
+                <div class="mode-pills-purple">
+                    <button class="mode-pill active" id="modeTailorBtn"><i class="fa-solid fa-bullseye"></i> Tailor to Job Description</button>
+                    <button class="mode-pill" id="modeScratchBtn"><i class="fa-solid fa-pen-to-square"></i> Build from Scratch</button>
                 </div>
             </div>
 
@@ -110,9 +174,9 @@
                     
                     <!-- Upload Resume Box -->
                     <div class="panel-card upload-card">
-                        <div class="card-title"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Existing Resume (Optional)</div>
+                        <div class="card-title"><i class="fa-solid fa-cloud-arrow-up text-purple"></i> Upload Existing Resume (Optional)</div>
                         <div class="dropzone" id="resumeDropZone">
-                            <i class="fa-solid fa-file-pdf dropzone-icon"></i>
+                            <i class="fa-solid fa-file-arrow-up dropzone-icon"></i>
                             <div class="dropzone-text">Drag & drop your <strong>PDF, DOCX, or TEX</strong> file here</div>
                             <div class="dropzone-hint" id="resumeFileInfo">Supports .pdf, .docx, .tex (DeepSeek auto-extracts your text)</div>
                             <input type="file" id="resumeFileInput" accept=".pdf,.docx,.doc,.tex,.txt" hidden>
@@ -122,7 +186,7 @@
                     <!-- Job Description Panel (Tailor Mode) -->
                     <div class="panel-card" id="tailorInputCard">
                         <div class="card-title-row">
-                            <div class="card-title"><i class="fa-solid fa-briefcase"></i> Target Job Description</div>
+                            <div class="card-title"><i class="fa-solid fa-briefcase text-purple"></i> Target Job Description</div>
                             <input type="hidden" id="modelSelect" value="deepseek/deepseek-chat">
                         </div>
 
@@ -135,14 +199,14 @@
                             <button class="sample-chip" data-sample="datasci">Senior Data Scientist</button>
                         </div>
 
-                        <button class="btn-generate-main" id="btnGenerate">
+                        <button class="btn-generate-purple" id="btnGenerate">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> Generate & Compile PDF
                         </button>
                     </div>
 
                     <!-- Scratch Profile Form (Scratch Mode) -->
                     <div class="panel-card hidden" id="scratchInputCard">
-                        <div class="card-title"><i class="fa-solid fa-user-pen"></i> Scratch Profile Information</div>
+                        <div class="card-title"><i class="fa-solid fa-user-pen text-purple"></i> Scratch Profile Information</div>
                         
                         <div class="scratch-form-grid">
                             <div class="form-field">
@@ -167,7 +231,7 @@
                             </div>
                         </div>
 
-                        <button class="btn-generate-main" id="btnGenerateScratch">
+                        <button class="btn-generate-purple" id="btnGenerateScratch">
                             <i class="fa-solid fa-bolt-lightning"></i> Build & Compile PDF
                         </button>
                     </div>

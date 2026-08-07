@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     // UI Elements
-    const apiKeyInput = document.getElementById('apiKey');
-    const toggleKeyBtn = document.getElementById('toggleKeyBtn');
     const templatesGrid = document.getElementById('templatesGrid');
     const activeTemplateName = document.getElementById('activeTemplateName');
     
@@ -21,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const jdInput = document.getElementById('jdInput');
     const btnGenerate = document.getElementById('btnGenerate');
     const btnGenerateScratch = document.getElementById('btnGenerateScratch');
-    const btnConvertHero = document.getElementById('btnConvertHero');
+    const btnGetStarted = document.getElementById('btnGetStarted');
+    const btnBuildAiHero = document.getElementById('btnBuildAiHero');
     
     // Preview Elements
     const pdfPlaceholder = document.getElementById('pdfPlaceholder');
@@ -36,43 +35,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const toastMsg = document.getElementById('toastMsg');
 
     // Application State
-    let selectedTemplateId = 'jake_ryan';
+    let selectedTemplateId = 'suraj_template';
     let currentMode = 'tailor';
     let parsedProfile = null;
     let allTemplates = [];
 
-    // Check backend API Key status
-    async function checkApiConfig() {
-        try {
-            const res = await fetch('/api/config');
-            const data = await res.json();
-            if (data.has_env_key) {
-                document.getElementById('envKeyBadge').classList.remove('hidden');
-                apiKeyInput.classList.add('hidden');
-                toggleKeyBtn.classList.add('hidden');
-            }
-        } catch (e) {
-            console.log('Config check note:', e);
-        }
-    }
-    checkApiConfig();
-
-    // Load API key from localStorage if manual entry
-    const savedKey = localStorage.getItem('openrouter_api_key');
-    if (savedKey) apiKeyInput.value = savedKey;
-    apiKeyInput.addEventListener('input', () => {
-        localStorage.setItem('openrouter_api_key', apiKeyInput.value.trim());
-    });
-
-    // Toggle API Key visibility
-    toggleKeyBtn.addEventListener('click', () => {
-        apiKeyInput.type = apiKeyInput.type === 'password' ? 'text' : 'password';
-    });
-
     // Mode Switching
     modeTailorBtn.addEventListener('click', () => setMode('tailor'));
     modeScratchBtn.addEventListener('click', () => setMode('scratch'));
-    btnConvertHero.addEventListener('click', () => {
+    
+    btnGetStarted.addEventListener('click', () => {
+        document.getElementById('templatesSection').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    btnBuildAiHero.addEventListener('click', () => {
         setMode('tailor');
         document.getElementById('studioSection').scrollIntoView({ behavior: 'smooth' });
     });
@@ -113,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.innerHTML = `
                 <div class="card-preview-box">
                     <img src="${tmpl.preview_img}" alt="${tmpl.name}" class="card-preview-img" onerror="this.src='/static/charter_preview.png'">
+                    ${isSelected ? '<div class="card-selected-check"><i class="fa-solid fa-check"></i></div>' : ''}
                     <span class="card-badge">${tmpl.badge || 'POPULAR'}</span>
                 </div>
                 <div class="card-info">
@@ -135,22 +112,31 @@ document.addEventListener('DOMContentLoaded', () => {
         activeTemplateName.textContent = tmpl.name;
         document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active-selected'));
         renderTemplateGrid(allTemplates);
-        showToast(`Template Selected: ${tmpl.name}`, 'info');
+        showToast(`Selected Template: ${tmpl.name}`, 'info');
         document.getElementById('studioSection').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Template Category Filter Pills
-    document.querySelectorAll('.filter-btn').forEach(btn => {
+    // Texora Category Filter Pills
+    document.querySelectorAll('.cat-pill').forEach(btn => {
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const filter = btn.getAttribute('data-filter');
+            
             if (filter === 'all') {
                 renderTemplateGrid(allTemplates);
-            } else if (filter === 'ats') {
-                renderTemplateGrid(allTemplates.filter(t => t.id === 'jake_ryan' || t.id === 'classic_charter'));
-            } else if (filter === 'tech') {
+            } else if (filter === 'modern') {
+                renderTemplateGrid(allTemplates.filter(t => t.id === 'modern_classic' || t.id === 'jake_ryan'));
+            } else if (filter === 'classic') {
+                renderTemplateGrid(allTemplates.filter(t => t.id === 'suraj_template' || t.id === 'classic_charter'));
+            } else if (filter === 'minimal') {
+                renderTemplateGrid(allTemplates.filter(t => t.id === 'jake_ryan'));
+            } else if (filter === 'creative') {
                 renderTemplateGrid(allTemplates.filter(t => t.id === 'deedy_resume' || t.id === 'modern_classic'));
+            } else if (filter === 'academic') {
+                renderTemplateGrid(allTemplates.filter(t => t.id === 'academic_cv'));
+            } else if (filter === 'tech') {
+                renderTemplateGrid(allTemplates.filter(t => t.id === 'suraj_template' || t.id === 'deedy_resume' || t.id === 'jake_ryan'));
             }
         });
     });
@@ -177,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('openrouter_api_key', apiKeyInput.value.trim());
 
         try {
             const res = await fetch('/api/upload-resume', {
@@ -236,7 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const payload = {
                 job_description: jd,
                 template_id: selectedTemplateId,
-                openrouter_api_key: apiKeyInput.value.trim(),
                 model: modelSelect.value,
                 profile_data: parsedProfile
             };
@@ -322,7 +306,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const payload = {
                 template_id: selectedTemplateId,
-                openrouter_api_key: apiKeyInput.value.trim(),
                 profile_data: profile
             };
 
