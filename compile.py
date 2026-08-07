@@ -270,142 +270,71 @@ TEMPLATE_ACADEMIC_CV = r"""
 # TEMPLATE 5: EXECUTIVE CHARTER (Charter Font Single-Column)
 # ==============================================================================
 TEMPLATE_EXECUTIVE_CHARTER = r"""
-\documentclass[10pt, letterpaper]{article}
-
-\usepackage[
-    ignoreheadfoot,
-    top=1.5 cm,
-    bottom=1.5 cm,
-    left=1.2 cm,
-    right=1.2 cm,
-    footskip=0.8 cm,
-]{geometry}
+\documentclass[letterpaper,10pt]{article}
+\usepackage[top=0.6in,bottom=0.6in,left=0.65in,right=0.65in]{geometry}
 \usepackage{titlesec}
 \usepackage{tabularx}
-\usepackage{array}
-\usepackage[dvipsnames]{xcolor}
-\definecolor{primaryColor}{RGB}{0, 0, 0}
 \usepackage{enumitem}
-\usepackage{fontawesome5}
-\usepackage{amsmath}
-\usepackage[
-    pdftitle={{{NAME}} - Resume},
-    pdfauthor={{{NAME}}},
-    colorlinks=true,
-    urlcolor=primaryColor
-]{hyperref}
-\usepackage[pscoord]{eso-pic}
-\usepackage{calc}
-\usepackage{bookmark}
-\usepackage{lastpage}
-\usepackage{changepage}
-\usepackage{paracol}
-\usepackage{ifthen}
-\usepackage{needspace}
-\usepackage{iftex}
-
-\ifPDFTeX
-    \input{glyphtounicode}
-    \pdfgentounicode=1
-    \usepackage[T1]{fontenc}
-    \usepackage[utf8]{inputenc}
-    \usepackage{lmodern}
-\fi
-
+\usepackage[hidelinks]{hyperref}
 \usepackage{charter}
+\usepackage{xcolor}
 
-\raggedright
-\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
 \pagestyle{empty}
-\setcounter{secnumdepth}{0}
 \setlength{\parindent}{0pt}
-\setlength{\topskip}{0pt}
-\setlength{\columnsep}{0.1cm}
-\pagenumbering{gobble}
+\linespread{0.96}\selectfont
 
-\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+\titleformat{\section}{
+  \vspace{-3pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-4pt}]
 
-\titlespacing{\section}{-1pt}{0.2 cm}{0.15 cm}
-
-\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
-\newenvironment{highlights}{
-    \begin{itemize}[
-        topsep=0.03 cm,
-        parsep=0.02 cm,
-        partopsep=0pt,
-        itemsep=0.02 cm,
-        leftmargin=0 cm + 8pt
-    ]
-}{
-    \end{itemize}
+\newcommand{\charterSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-6pt}
 }
 
-\newenvironment{onecolentry}{
-    \begin{adjustwidth}{0 cm + 0.00001 cm}{0 cm + 0.00001 cm}
-}{
-    \end{adjustwidth}
+\newcommand{\charterProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-6pt}
 }
-
-\newenvironment{twocolentry}[2][]{
-    \onecolentry
-    \def\secondColumn{#2}
-    \setcolumnwidth{\fill, 3.5 cm}
-    \begin{paracol}{2}
-}{
-    \switchcolumn \raggedleft \secondColumn
-    \endonecolentry
-}
-
-\newenvironment{header}{
-    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.3}
-}{
-    \par\kern\topsep
-}
-
-\let\hrefWithoutArrow\href
 
 \begin{document}
-    \newcommand{\AND}{\unskip
-        \cleaders\copy\ANDbox\hskip\wd\ANDbox
-        \ignorespaces
-    }
-    \newsavebox\ANDbox
-    \sbox\ANDbox{$|$}
 
-    \begin{header}
-        \fontsize{22 pt}{22 pt}\selectfont {{NAME}}
+\begin{center}
+    {\Huge \scshape \bfseries {{NAME}}} \\[4pt]
+    \small {{CONTACT_LINE}}
+\end{center}
 
-        \vspace{3 pt}
+\vspace{-6pt}
 
-        \normalsize
-        {{CONTACT_LINE}}
-    \end{header}
+\section{Professional Summary}
+\small{{{SUMMARY_SECTION}}}
 
-    \vspace{3 pt - 0.3 cm}
-
-    \section{PROFESSIONAL SUMMARY}
-    \begin{onecolentry}
-{{SUMMARY_SECTION}}
-    \end{onecolentry}
-
-    \section{TECHNICAL SKILLS}
+\section{Technical Skills}
+\begin{itemize}[leftmargin=0.15in, label={}, itemsep=1pt, topsep=2pt]
+    \small{\item{
 {{SKILLS_SECTION}}
+    }}
+\end{itemize}
 
-    \section{PROFESSIONAL EXPERIENCE}
+\section{Professional Experience}
+\begin{itemize}[leftmargin=0.15in, label={}]
 {{EXPERIENCE_SECTION}}
+\end{itemize}
 
-    \section{KEY PROJECTS \& IMPACT}
+\section{Key Projects \& Impact}
+\begin{itemize}[leftmargin=0.15in, label={}]
 {{PROJECTS_SECTION}}
+\end{itemize}
 
-    \section{EDUCATION}
+\section{Education}
+\begin{itemize}[leftmargin=0.15in, label={}]
 {{EDUCATION_SECTION}}
-
-    \section{CERTIFICATIONS \& ACHIEVEMENTS}
-    \begin{onecolentry}
-        \begin{highlights}
-{{CERTIFICATIONS_SECTION}}
-        \end{highlights}
-    \end{onecolentry}
+\end{itemize}
 
 \end{document}
 """
@@ -470,7 +399,7 @@ DEFAULT_PROJECTS_LATEX = r"""\textbf{Credit Risk Modeling \& Loan Default Predic
 Built an end-to-end machine learning pipeline (XGBoost, Random Forest) to predict borrower default probability."""
 
 BASE_LATEX_TEMPLATE = TEMPLATE_JAKE_RYAN
-BASE_LATEX_CODE = TEMPLATE_JAKE_RYAN.replace("{{SUMMARY_SECTION}}", DEFAULT_SUMMARY_LATEX).replace("{{SKILLS_SECTION}}", DEFAULT_SKILLS_LATEX).replace("{{PROJECTS_SECTION}}", DEFAULT_PROJECTS_LATEX).replace("{{NAME}}", "Suraj Vishwakarma").replace("{{CONTACT_LINE}}", "Dombivli, Mumbai $|$ svishwakarma9322@gmail.com $|$ +91 9324316769 $|$ LinkedIn $|$ GitHub").replace("{{EDUCATION_SECTION}}", "").replace("{{EXPERIENCE_SECTION}}", "")
+BASE_LATEX_CODE = TEMPLATE_JAKE_RYAN.replace("{{SUMMARY_SECTION}}", DEFAULT_SUMMARY_LATEX).replace("{{SKILLS_SECTION}}", DEFAULT_SKILLS_LATEX).replace("{{PROJECTS_SECTION}}", DEFAULT_PROJECTS_LATEX).replace("{{NAME}}", "Suraj Vishwakarma").replace("{{CONTACT_LINE}}", "Dombivli, Mumbai $|$ ABS@gmail.com $|$ +91 12345 $|$ LinkedIn $|$ GitHub").replace("{{EDUCATION_SECTION}}", "").replace("{{EXPERIENCE_SECTION}}", "")
 
 def find_latex_compiler():
     """Look for local LaTeX compilers in PATH and common installation directories."""

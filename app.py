@@ -134,6 +134,14 @@ def format_experience_to_latex(exp_data: list, template_id: str = "jake_ryan") -
 \\begin{{itemize}}[leftmargin=*,itemsep=1pt,topsep=2pt]
 {bullet_tex}
 \\end{{itemize}}"""
+        elif template_id == "classic_charter":
+            bullet_tex = "\n".join([f"        \\small{{\\item {clean_latex_text(b)}}}" for b in bullets])
+            block = f"""    \\charterSubheading
+      {{{role}}}{{{dates}}}
+      {{{company}}}{{{loc}}}
+      \\begin{{itemize}}[leftmargin=12pt, topsep=1pt, itemsep=1pt]
+{bullet_tex}
+      \\end{{itemize}}"""
         else:
             bullet_tex = "\n".join([f"            \\item {clean_latex_text(b)}" for b in bullets])
             block = f"""    \\textbf{{{role}}}, {company} \\hfill {{{dates}}}\\\\
@@ -174,6 +182,14 @@ def format_projects_to_latex(projects_data: list, template_id: str = "jake_ryan"
 \\begin{{itemize}}[leftmargin=*,itemsep=1pt,topsep=2pt]
 {bullets_tex}
 \\end{{itemize}}"""
+        elif template_id == "classic_charter":
+            bullet_items = [f"        \\small{{\\item {clean_latex_text(b)}}}" for b in bullets]
+            bullets_tex = "\n".join(bullet_items)
+            block = f"""    \\charterProjectHeading
+      {{\\textbf{{{title}}}}}{{{year}}}
+      \\begin{{itemize}}[leftmargin=12pt, topsep=1pt, itemsep=1pt]
+{bullets_tex}
+      \\end{{itemize}}"""
         else:
             bullet_items = [f"            \\item {clean_latex_text(b)}" for b in bullets]
             bullets_tex = "\n".join(bullet_items)
@@ -204,6 +220,10 @@ def format_education_to_latex(edu_data: list, template_id: str = "jake_ryan") ->
 {degree} \\\\
 {{\\footnotesize {detail}}} \\\\
 {{\\footnotesize {year}}}"""
+        elif template_id == "classic_charter":
+            block = f"""    \\charterSubheading
+      {{{inst}}}{{{loc}}}
+      {{{degree}}}{{{year}}}"""
         else:
             block = f"""    \\textbf{{{inst}}} \\hfill {{{year}}}\\\\
     \\textit{{{degree}}} -- {{{detail}}}"""
@@ -354,8 +374,8 @@ async def generate_from_scratch(req: ScratchRequest):
     p = req.profile_data
     name = clean_latex_text(p.get("name", "Suraj Vishwakarma"))
     loc = clean_latex_text(p.get("location", "Dombivli, Mumbai"))
-    email = clean_latex_text(p.get("email", "svishwakarma9322@gmail.com"))
-    phone = clean_latex_text(p.get("phone", "+91 9324316769"))
+    email = clean_latex_text(p.get("email", "suraj.v@example.com"))
+    phone = clean_latex_text(p.get("phone", "+91 98765 43210"))
     linkedin = clean_latex_text(p.get("linkedin", "LinkedIn"))
     github = clean_latex_text(p.get("github", "GitHub"))
     
@@ -502,8 +522,8 @@ async def tailor_and_generate(req: TailorRequest):
         
     name = clean_latex_text(profile.get("name", "Suraj Vishwakarma"))
     loc = clean_latex_text(profile.get("location", "Dombivli, Mumbai"))
-    email = clean_latex_text(profile.get("email", "svishwakarma9322@gmail.com"))
-    phone = clean_latex_text(profile.get("phone", "+91 9324316769"))
+    email = clean_latex_text(profile.get("email", "suraj.v@example.com"))
+    phone = clean_latex_text(profile.get("phone", "+91 98765 43210"))
     linkedin = clean_latex_text(profile.get("linkedin", "LinkedIn"))
     github = clean_latex_text(profile.get("github", "GitHub"))
     
