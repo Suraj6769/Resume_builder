@@ -270,15 +270,15 @@ TEMPLATE_ACADEMIC_CV = r"""
 # TEMPLATE 5: EXECUTIVE CHARTER (Charter Font Single-Column)
 # ==============================================================================
 TEMPLATE_EXECUTIVE_CHARTER = r"""
-\documentclass[9.5pt, letterpaper]{article}
+\documentclass[10pt, letterpaper]{article}
 
 \usepackage[
     ignoreheadfoot,
-    top=0.65 cm,
-    bottom=0.65 cm,
-    left=1.0 cm,
-    right=1.0 cm,
-    footskip=0.3 cm,
+    top=1.5 cm,
+    bottom=1.5 cm,
+    left=1.2 cm,
+    right=1.2 cm,
+    footskip=0.8 cm,
 ]{geometry}
 \usepackage{titlesec}
 \usepackage{tabularx}
@@ -315,7 +315,6 @@ TEMPLATE_EXECUTIVE_CHARTER = r"""
 \usepackage{charter}
 
 \raggedright
-\linespread{0.95}\selectfont
 \AtBeginEnvironment{adjustwidth}{\partopsep0pt}
 \pagestyle{empty}
 \setcounter{secnumdepth}{0}
@@ -324,16 +323,17 @@ TEMPLATE_EXECUTIVE_CHARTER = r"""
 \setlength{\columnsep}{0.1cm}
 \pagenumbering{gobble}
 
-\titleformat{\section}{\needspace{2\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
-\titlespacing{\section}{-1pt}{0.04 cm}{0.02 cm}
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{-1pt}{0.2 cm}{0.15 cm}
 
 \renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
 \newenvironment{highlights}{
     \begin{itemize}[
-        topsep=0pt,
-        parsep=0pt,
+        topsep=0.03 cm,
+        parsep=0.02 cm,
         partopsep=0pt,
-        itemsep=0pt,
+        itemsep=0.02 cm,
         leftmargin=0 cm + 8pt
     ]
 }{
@@ -353,12 +353,11 @@ TEMPLATE_EXECUTIVE_CHARTER = r"""
     \begin{paracol}{2}
 }{
     \switchcolumn \raggedleft \secondColumn
-    \end{paracol}
     \endonecolentry
 }
 
 \newenvironment{header}{
-    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.1}
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.3}
 }{
     \par\kern\topsep
 }
@@ -374,17 +373,17 @@ TEMPLATE_EXECUTIVE_CHARTER = r"""
     \sbox\ANDbox{$|$}
 
     \begin{header}
-        \fontsize{19 pt}{19 pt}\selectfont {{NAME}}
+        \fontsize{22 pt}{22 pt}\selectfont {{NAME}}
 
-        \vspace{1 pt}
+        \vspace{3 pt}
 
         \normalsize
         {{CONTACT_LINE}}
     \end{header}
 
-    \vspace{1 pt - 0.2 cm}
+    \vspace{3 pt - 0.3 cm}
 
-    \section{SUMMARY}
+    \section{PROFESSIONAL SUMMARY}
     \begin{onecolentry}
 {{SUMMARY_SECTION}}
     \end{onecolentry}
@@ -395,13 +394,13 @@ TEMPLATE_EXECUTIVE_CHARTER = r"""
     \section{PROFESSIONAL EXPERIENCE}
 {{EXPERIENCE_SECTION}}
 
-    \section{ACADEMIC PROJECTS}
+    \section{KEY PROJECTS \& IMPACT}
 {{PROJECTS_SECTION}}
 
     \section{EDUCATION}
 {{EDUCATION_SECTION}}
 
-    \section{CERTIFICATIONS}
+    \section{CERTIFICATIONS \& ACHIEVEMENTS}
     \begin{onecolentry}
         \begin{highlights}
 {{CERTIFICATIONS_SECTION}}

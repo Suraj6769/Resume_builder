@@ -123,14 +123,7 @@
                     <div class="panel-card" id="tailorInputCard">
                         <div class="card-title-row">
                             <div class="card-title"><i class="fa-solid fa-briefcase"></i> Target Job Description</div>
-                            <div class="model-select-wrapper">
-                                <i class="fa-solid fa-robot"></i>
-                                <select id="modelSelect">
-                                    <option value="deepseek/deepseek-chat" selected>DeepSeek V3 (Fast)</option>
-                                    <option value="deepseek/deepseek-r1">DeepSeek R1 (Reasoning)</option>
-                                    <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B</option>
-                                </select>
-                            </div>
+                            <input type="hidden" id="modelSelect" value="deepseek/deepseek-chat">
                         </div>
 
                         <textarea id="jdInput" placeholder="Paste target Job Description here to customize Summary, Technical Skills, and Projects..."></textarea>
