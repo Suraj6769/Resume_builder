@@ -30,10 +30,11 @@
             </div>
 
             <div class="nav-actions">
-                <!-- API Key Bar -->
-                <div class="api-key-box">
-                    <i class="fa-solid fa-key"></i>
-                    <input type="password" id="apiKey" placeholder="OpenRouter Key...">
+                <!-- API Key Security Badge / Input Bar -->
+                <div class="api-key-box" id="apiKeyBox">
+                    <i class="fa-solid fa-lock" id="apiKeyIcon"></i>
+                    <span id="envKeyBadge" class="env-key-badge hidden"><i class="fa-solid fa-circle-check"></i> API Key Active</span>
+                    <input type="password" id="apiKey" placeholder="OpenRouter Key..." autocomplete="off">
                     <button id="toggleKeyBtn" class="btn-eye" title="Toggle visibility"><i class="fa-solid fa-eye"></i></button>
                 </div>
                 <button class="btn-nav-primary" id="btnTryFree">Try Free <i class="fa-solid fa-arrow-right"></i></button>

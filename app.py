@@ -227,6 +227,14 @@ def read_root():
 def get_templates():
     return {"templates": list(TEMPLATES_REGISTRY.values())}
 
+@app.get("/api/config")
+def get_config():
+    env_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    return {
+        "has_env_key": bool(env_key),
+        "masked_key": f"{env_key[:6]}...{env_key[-4:]}" if len(env_key) > 10 else ""
+    }
+
 @app.get("/api/base-template")
 def get_base_template():
     return {"latex_code": BASE_LATEX_CODE}

@@ -41,7 +41,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let parsedProfile = null;
     let allTemplates = [];
 
-    // Load API key from localStorage
+    // Check backend API Key status
+    async function checkApiConfig() {
+        try {
+            const res = await fetch('/api/config');
+            const data = await res.json();
+            if (data.has_env_key) {
+                document.getElementById('envKeyBadge').classList.remove('hidden');
+                apiKeyInput.classList.add('hidden');
+                toggleKeyBtn.classList.add('hidden');
+            }
+        } catch (e) {
+            console.log('Config check note:', e);
+        }
+    }
+    checkApiConfig();
+
+    // Load API key from localStorage if manual entry
     const savedKey = localStorage.getItem('openrouter_api_key');
     if (savedKey) apiKeyInput.value = savedKey;
     apiKeyInput.addEventListener('input', () => {
