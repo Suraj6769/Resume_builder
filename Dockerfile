@@ -19,7 +19,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose server port
+ENV PORT=8050
 EXPOSE 8050
 
 # Launch Uvicorn server
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8050"]
+CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT:-8050}"]

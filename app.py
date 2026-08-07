@@ -268,13 +268,17 @@ def format_certifications_to_latex(certs_data: list) -> str:
         return ""
     return "\n".join([f"  \\item {clean_latex_text(c)}" for c in certs_data])
 
-@app.get("/", response_class=HTMLResponse)
+@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 def read_root():
     index_file = os.path.join(STATIC_DIR, "index.html")
     if os.path.exists(index_file):
         with open(index_file, "r", encoding="utf-8") as f:
             return f.read()
-    return "<h1>Underleaf AI Resume Studio Running</h1>"
+    return "<h1>Texora AI Resume Studio Running</h1>"
+
+@app.api_route("/health", methods=["GET", "HEAD"])
+def health_check():
+    return {"status": "ok"}
 
 @app.get("/api/templates")
 def get_templates():
