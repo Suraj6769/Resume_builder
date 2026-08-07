@@ -1,15 +1,17 @@
 import os
+import re
 import shutil
 import subprocess
 import urllib.parse
 import urllib.request
 import uuid
 
-# Base LaTeX Resume Template with placeholders for SUMMARY, SKILLS, and PROJECTS
-BASE_LATEX_TEMPLATE = r"""
+# ==============================================================================
+# TEMPLATE 1: CLASSIC EXECUTIVE (Single Column, Charter Font, Clean Divider Lines)
+# ==============================================================================
+TEMPLATE_CLASSIC_EXECUTIVE = r"""
 \documentclass[9.5pt, letterpaper]{article}
 
-% Packages:
 \usepackage[
     ignoreheadfoot,
     top=0.65 cm,
@@ -27,8 +29,8 @@ BASE_LATEX_TEMPLATE = r"""
 \usepackage{fontawesome5}
 \usepackage{amsmath}
 \usepackage[
-    pdftitle={Suraj Vishwakarma - Quantitative Data Scientist Resume},
-    pdfauthor={Suraj Vishwakarma},
+    pdftitle={{{NAME}} - Resume},
+    pdfauthor={{{NAME}}},
     colorlinks=true,
     urlcolor=primaryColor
 ]{hyperref}
@@ -63,7 +65,6 @@ BASE_LATEX_TEMPLATE = r"""
 \pagenumbering{gobble}
 
 \titleformat{\section}{\needspace{2\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
-
 \titlespacing{\section}{-1pt}{0.04 cm}{0.02 cm}
 
 \renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
@@ -113,28 +114,12 @@ BASE_LATEX_TEMPLATE = r"""
     \sbox\ANDbox{$|$}
 
     \begin{header}
-        \fontsize{19 pt}{19 pt}\selectfont Suraj Vishwakarma
+        \fontsize{19 pt}{19 pt}\selectfont {{NAME}}
 
         \vspace{1 pt}
 
         \normalsize
-        \mbox{Dombivli, Mumbai}%
-        \kern 4.0 pt%
-        \AND%
-        \kern 4.0 pt%
-        \mbox{\hrefWithoutArrow{mailto:svishwakarma9322@gmail.com}{svishwakarma9322@gmail.com}}%
-        \kern 4.0 pt%
-        \AND%
-        \kern 4.0 pt%
-        \mbox{\hrefWithoutArrow{tel:+91-9324316769}{+91 9324316769}}%
-        \kern 4.0 pt%
-        \AND%
-        \kern 4.0 pt%
-        \mbox{\hrefWithoutArrow{https://linkedin.com/in/surajvishwakarma11}{LinkedIn}}%
-        \kern 4.0 pt%
-        \AND%
-        \kern 4.0 pt%
-        \mbox{\hrefWithoutArrow{https://github.com/Suraj6769}{GitHub}}%
+        {{CONTACT_LINE}}
     \end{header}
 
     \vspace{1 pt - 0.2 cm}
@@ -148,84 +133,246 @@ BASE_LATEX_TEMPLATE = r"""
 {{SKILLS_SECTION}}
 
     \section{PROFESSIONAL EXPERIENCE}
-
-    \begin{twocolentry}{May 2026 -- Present}
-        \textbf{AI Engineer}, PSS
-    \end{twocolentry}
-    \vspace{0.01 cm}
-    \begin{onecolentry}
-        \begin{highlights}
-            \item Leveraged GenAI to optimize recruitment finance, reducing manual screening costs by automating candidate shortlisting and data collection via robotic calls.
-            \item Built an LLM-based resume recommendation system, integrating internal databases with external Google results to source top-tier talent, improving hiring pipeline velocity by 20\%.
-            \item Developed an Agentic AI workflow to automate communication (Email/WhatsApp) and data collection, streamlining the end-to-end recruitment cycle and reducing administrative overhead by 30\%.
-            \item Integrated APIs (ChatGPT, Gemini, Claude) to generate structured reports and screening criteria, standardizing candidate evaluation metrics.
-        \end{highlights}
-    \end{onecolentry}
-
-    \vspace{0.01 cm}
-
-    \begin{twocolentry}{Feb 2025 -- Apr 2026}
-        \textbf{Risk Modeling Analyst}, Marsh McLennan (Internship)
-    \end{twocolentry}
-    \vspace{0.01 cm}
-    \begin{onecolentry}
-        \begin{highlights}
-            \item Architected end-to-end data science pipelines in Python (Pandas, NumPy) to automate the ingestion, cleaning, and standardization of exposure data for 125+ accounts, eliminating manual Excel workflows and boosting team productivity by 40\%.
-            \item Developed predictive machine learning models (XGBoost, GLM) to forecast aggregate loss costs, validating outputs against traditional RMS/AIR models to improve the accuracy of financial risk assessments by 12\% for underwriting portfolios.
-            \item Designed and deployed interactive dashboards (Power BI) to visualize critical financial risk metrics (AAL, PML, OEP, AEP), enabling senior stakeholders to monitor portfolio concentration and make data-driven reinsurance purchasing decisions 30\% faster.
-            \item Applied statistical modeling (Time-Series \& Regression) on historical claims data to identify emerging catastrophe risk drivers, directly influencing premium pricing strategies and optimizing capital allocation for the firm.
-        \end{highlights}
-    \end{onecolentry}
-
-    \vspace{0.01 cm}
-
-    \begin{twocolentry}{Jan 2025 -- Feb 2025}
-        \textbf{Junior GenAI Engineer}, Visulon Inc.
-    \end{twocolentry}
-    \vspace{0.01 cm}
-    \begin{onecolentry}
-        \begin{highlights}
-            \item Designed an NLP-to-SQL pipeline using Ollama LLMs, enabling business stakeholders to query financial databases using natural language, reducing reliance on technical teams and improving reporting speed by 40\%.
-            \item Fine-tuned and deployed Stable Diffusion models for rapid prototyping, optimizing GPU inference latency for real-time applications.
-        \end{highlights}
-    \end{onecolentry}
+{{EXPERIENCE_SECTION}}
 
     \section{ACADEMIC PROJECTS}
-
 {{PROJECTS_SECTION}}
 
     \section{EDUCATION}
-    \begin{twocolentry}{May 2025}
-        \textbf{M.Sc. Statistics \& Data Science}, NMIMS Mumbai
-    \end{twocolentry}
-    \vspace{0.01 cm}
-    \begin{onecolentry}
-        \begin{highlights}
-            \item CGPA: 3.67 / 4.0
-        \end{highlights}
-    \end{onecolentry}
-    \vspace{0.01 cm}
-    \begin{twocolentry}{2023}
-        \textbf{B.Sc. Statistics}, B.N. Bandodkar College, Mumbai
-    \end{twocolentry}
-    \vspace{0.01 cm}
-    \begin{onecolentry}
-        \begin{highlights}
-            \item CGPA: 9.7 / 10.0
-        \end{highlights}
-    \end{onecolentry}
+{{EDUCATION_SECTION}}
 
     \section{CERTIFICATIONS}
     \begin{onecolentry}
         \begin{highlights}
-            \item Python with Data Science (Udemy)
-            \item Machine Learning Advanced (Udemy)
-            \item Deep Learning with TensorFlow (Udemy)
+{{CERTIFICATIONS_SECTION}}
         \end{highlights}
     \end{onecolentry}
 
 \end{document}
 """
+
+# ==============================================================================
+# TEMPLATE 2: MODERN MINIMALIST (Sleek Sans-Serif, Navy Accent Headers)
+# ==============================================================================
+TEMPLATE_MODERN_MINIMALIST = r"""
+\documentclass[9.5pt, letterpaper]{article}
+
+\usepackage[
+    top=0.65 cm,
+    bottom=0.65 cm,
+    left=1.0 cm,
+    right=1.0 cm,
+]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{xcolor}
+\definecolor{navyAccent}{RGB}{15, 32, 67}
+\definecolor{darkText}{RGB}{30, 30, 30}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, urlcolor=navyAccent}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\linespread{0.96}\selectfont
+
+\titleformat{\section}{\color{navyAccent}\bfseries\large\uppercase}{}{0pt}{}[\vspace{1pt}\hrule height 1pt color navyAccent]
+\titlespacing{\section}{0pt}{0.06 cm}{0.04 cm}
+
+\newenvironment{customitem}{
+    \begin{itemize}[topsep=0pt, parsep=0pt, itemsep=0.5pt, leftmargin=12pt]
+}{
+    \end{itemize}
+}
+
+\begin{document}
+
+\begin{center}
+    {\Huge \bfseries \color{navyAccent} {{NAME}}}\\[3pt]
+    {\small \color{darkText} {{CONTACT_LINE}}}
+\end{center}
+
+\vspace{-0.1cm}
+
+\section{Professional Summary}
+{\small {{SUMMARY_SECTION}}}
+
+\section{Technical Skills}
+{{SKILLS_SECTION}}
+
+\section{Professional Experience}
+{{EXPERIENCE_SECTION}}
+
+\section{Projects}
+{{PROJECTS_SECTION}}
+
+\section{Education}
+{{EDUCATION_SECTION}}
+
+\section{Certifications}
+\begin{customitem}
+{{CERTIFICATIONS_SECTION}}
+\end{customitem}
+
+\end{document}
+"""
+
+# ==============================================================================
+# TEMPLATE 3: TECH SIDEBAR (2-Column Layout with Skills Sidebar)
+# ==============================================================================
+TEMPLATE_TECH_SIDEBAR = r"""
+\documentclass[9.5pt, letterpaper]{article}
+\usepackage[top=0.6 cm, bottom=0.6 cm, left=0.8 cm, right=0.8 cm]{geometry}
+\usepackage{paracol}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{lmodern}
+
+\definecolor{sidebarBg}{RGB}{245, 247, 250}
+\definecolor{techBlue}{RGB}{20, 80, 160}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\linespread{0.95}\selectfont
+
+\titleformat{\section}{\color{techBlue}\bfseries\large}{}{0pt}{}[\vspace{1pt}\hrule height 0.8pt color techBlue]
+\titlespacing{\section}{0pt}{0.05 cm}{0.03 cm}
+
+\setcolumnwidth{5.2 cm, \fill}
+\setlength{\columnsep}{0.4 cm}
+
+\begin{document}
+
+\begin{paracol}{2}
+
+% --- LEFT SIDEBAR ---
+\begin{center}
+    {\Large \bfseries \color{techBlue} {{NAME}}}\\[3pt]
+    {\footnotesize {{CONTACT_SIDEBAR}}}
+\end{center}
+
+\vspace{0.1 cm}
+
+\section{Skills}
+{{SKILLS_SIDEBAR}}
+
+\vspace{0.1 cm}
+
+\section{Education}
+{{EDUCATION_SIDEBAR}}
+
+\vspace{0.1 cm}
+
+\section{Certifications}
+\begin{itemize}[leftmargin=8pt, topsep=0pt, itemsep=1pt]
+{{CERTIFICATIONS_SECTION}}
+\end{itemize}
+
+% --- MAIN COLUMN ---
+\switchcolumn
+
+\section{Summary}
+{\small {{SUMMARY_SECTION}}}
+
+\section{Experience}
+{{EXPERIENCE_SECTION}}
+
+\section{Projects}
+{{PROJECTS_SECTION}}
+
+\end{paracol}
+
+\end{document}
+"""
+
+# ==============================================================================
+# TEMPLATE 4: ACADEMIC FORMAL (Serif, Classic Research Format)
+# ==============================================================================
+TEMPLATE_ACADEMIC_FORMAL = r"""
+\documentclass[10pt, letterpaper]{article}
+
+\usepackage[top=0.7 cm, bottom=0.7 cm, left=1.1 cm, right=1.1 cm]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{mathptmx} % Times New Roman style font
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\linespread{0.98}\selectfont
+
+\titleformat{\section}{\scshape\large\bfseries}{}{0pt}{}[\vspace{1pt}\hrule height 0.5pt]
+\titlespacing{\section}{0pt}{0.08 cm}{0.04 cm}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \scshape \bfseries {{NAME}}}\\[4pt]
+    {\small {{CONTACT_LINE}}}
+\end{center}
+
+\section{Summary}
+{{SUMMARY_SECTION}}
+
+\section{Technical & Analytical Skills}
+{{SKILLS_SECTION}}
+
+\section{Professional Experience}
+{{EXPERIENCE_SECTION}}
+
+\section{Research & Academic Projects}
+{{PROJECTS_SECTION}}
+
+\section{Education}
+{{EDUCATION_SECTION}}
+
+\section{Certifications}
+\begin{itemize}[topsep=0pt, itemsep=1pt, leftmargin=12pt]
+{{CERTIFICATIONS_SECTION}}
+\end{itemize}
+
+\end{document}
+"""
+
+# Registry of Available Templates
+TEMPLATES_REGISTRY = {
+    "classic_executive": {
+        "id": "classic_executive",
+        "name": "Classic Executive",
+        "tag": "Charter Serif / Official Standard",
+        "description": "Clean single-column professional resume layout with elegant Charter font and subtle dividing lines.",
+        "latex_template": TEMPLATE_CLASSIC_EXECUTIVE
+    },
+    "modern_minimalist": {
+        "id": "modern_minimalist",
+        "name": "Modern Minimalist",
+        "tag": "Sans-Serif / Navy Accent",
+        "description": "Ultra-sleek modern layout with bold navy headers, Helvetica typography, and high readability.",
+        "latex_template": TEMPLATE_MODERN_MINIMALIST
+    },
+    "tech_sidebar": {
+        "id": "tech_sidebar",
+        "name": "Tech & Developer Sidebar",
+        "tag": "2-Column Sidebar Layout",
+        "description": "Distinctive 2-column format featuring a left sidebar for skills, contact, and education alongside a main project column.",
+        "latex_template": TEMPLATE_TECH_SIDEBAR
+    },
+    "academic_formal": {
+        "id": "academic_formal",
+        "name": "Academic & Research Formal",
+        "tag": "Times Serif / Publication Style",
+        "description": "Classic academic research format utilizing Times font and small-cap section headers.",
+        "latex_template": TEMPLATE_ACADEMIC_FORMAL
+    }
+}
+
+BASE_LATEX_TEMPLATE = TEMPLATE_CLASSIC_EXECUTIVE
 
 DEFAULT_SUMMARY_LATEX = r"""        Quantitative Data Scientist with a strong foundation in Statistics and Financial Risk Modeling. Experienced in building predictive models for loss estimation, customer behavior, and generative AI systems. Proficient in Python, SQL, and cloud platforms. Skilled in translating complex financial data into actionable business insights to drive revenue growth and mitigate risk."""
 
@@ -285,7 +432,7 @@ DEFAULT_PROJECTS_LATEX = r"""    \begin{twocolentry}{2024}
         \end{highlights}
     \end{onecolentry}"""
 
-BASE_LATEX_CODE = BASE_LATEX_TEMPLATE.replace("{{SUMMARY_SECTION}}", DEFAULT_SUMMARY_LATEX).replace("{{SKILLS_SECTION}}", DEFAULT_SKILLS_LATEX).replace("{{PROJECTS_SECTION}}", DEFAULT_PROJECTS_LATEX)
+BASE_LATEX_CODE = BASE_LATEX_TEMPLATE.replace("{{SUMMARY_SECTION}}", DEFAULT_SUMMARY_LATEX).replace("{{SKILLS_SECTION}}", DEFAULT_SKILLS_LATEX).replace("{{PROJECTS_SECTION}}", DEFAULT_PROJECTS_LATEX).replace("{{NAME}}", "Suraj Vishwakarma").replace("{{CONTACT_LINE}}", "Dombivli, Mumbai | svishwakarma9322@gmail.com | +91 9324316769 | LinkedIn | GitHub").replace("{{EXPERIENCE_SECTION}}", "").replace("{{EDUCATION_SECTION}}", "").replace("{{CERTIFICATIONS_SECTION}}", "")
 
 def find_latex_compiler():
     """Look for local LaTeX compilers in PATH and common installation directories."""
@@ -369,4 +516,3 @@ if __name__ == "__main__":
         print(f"Success! PDF created at: {result}")
     else:
         print(f"Compilation failed: {result}")
-
