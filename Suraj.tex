@@ -1,0 +1,297 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot,
+    top=1.5 cm,
+    bottom=1.5 cm,
+    left=1.2 cm,
+    right=1.2 cm,
+    footskip=0.8 cm,
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={Suraj Vishwakarma - Data Scientist Resume},
+    pdfauthor={Suraj Vishwakarma},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
+
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage{charter}
+
+\raggedright
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.1cm}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{-1pt}{0.2 cm}{0.15 cm}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.03 cm,
+        parsep=0.02 cm,
+        partopsep=0pt,
+        itemsep=0.02 cm,
+        leftmargin=0 cm + 8pt
+    ]
+}{
+    \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{0 cm + 0.00001 cm}{0 cm + 0.00001 cm}
+}{
+    \end{adjustwidth}
+}
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 3.5 cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
+    \endonecolentry
+}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.3}
+}{
+    \par\kern\topsep
+}
+
+\let\hrefWithoutArrow\href
+
+\begin{document}
+    \newcommand{\AND}{\unskip
+        \cleaders\copy\ANDbox\hskip\wd\ANDbox
+        \ignorespaces
+    }
+    \newsavebox\ANDbox
+    \sbox\ANDbox{$|$}
+
+    \begin{header}
+        \fontsize{22 pt}{22 pt}\selectfont Suraj Vishwakarma
+
+        \vspace{3 pt}
+
+        \normalsize
+        \mbox{Dombivli, Mumbai}%
+        \kern 4.0 pt%
+        \AND%
+        \kern 4.0 pt%
+        \mbox{\hrefWithoutArrow{mailto:suraj.v@example.com}{suraj.v@example.com}}%
+        \kern 4.0 pt%
+        \AND%
+        \kern 4.0 pt%
+        \mbox{\hrefWithoutArrow{tel:+91-9876543210}{+91 98765 43210}}%
+        \kern 4.0 pt%
+        \AND%
+        \kern 4.0 pt%
+        \mbox{\hrefWithoutArrow{https://linkedin.com/in/surajv}{LinkedIn}}%
+        \kern 4.0 pt%
+        \AND%
+        \kern 4.0 pt%
+        \mbox{\hrefWithoutArrow{https://github.com/Suraj6769}{GitHub}}%
+    \end{header}
+
+    \vspace{3 pt - 0.3 cm}
+
+    \section{PROFESSIONAL SUMMARY}
+    \begin{onecolentry}
+        Data Scientist with \textbf{1.5+ years} of experience in building and deploying production-grade AI/ML solutions, including \textbf{computer vision} and generative AI systems. Proven track record of translating complex business problems into scalable, measurable AI systems. Expertise in statistical modeling, predictive analytics, LLMs, MLOps, and stakeholder engagement. Passionate about driving business impact through AI, from concept to deployment and monitoring, with strong focus on governance, compliance, and cost-effectiveness.
+    \end{onecolentry}
+
+    \section{TECHNICAL SKILLS}
+    \begin{onecolentry}
+        \textbf{Programming:} Python, SQL, R, SAS
+    \end{onecolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \textbf{ML \& AI:} Regression, Classification, Time Series, XGBoost, Random Forest, Neural Networks, \textbf{Computer Vision, OpenCV, Video Processing, CNN, LSTM}, NLP, LLMs, RAG, Agentic AI, GenAI
+    \end{onecolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \textbf{Cloud \& Tools:} AWS (SageMaker, Lambda, ECS), Docker, MLflow, FastAPI, LangChain, Hugging Face, Git
+    \end{onecolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \textbf{MLOps:} Feature Engineering, Model Validation, A/B Testing, Data Governance, Model Monitoring, Drift Detection, CI/CD
+    \end{onecolentry}
+
+    \section{PROFESSIONAL EXPERIENCE}
+
+    \begin{twocolentry}{May 2026 -- Present}
+        \textbf{AI/ML Engineer}, Personnel Search Services (PSS), Mumbai
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Architected and deployed an AI-driven candidate recommendation engine using LLMs and weighted-similarity algorithms, integrating internal ATS databases with open-source Google results and a human-in-the-loop validation mechanism – boosting candidate matching accuracy by 45\% and reducing time-to-fill by 30\%.
+            \item Developed an agentic AI orchestration layer to automate resume shortlisting, multi-channel outreach (email/WhatsApp), and candidate data collection via interactive robotic voice calls/questionnaires, achieving 70\% reduction in manual recruitment overhead.
+            \item Integrated and fine-tuned multiple enterprise GenAI APIs (ChatGPT, Gemini, Claude) for automated job description enhancement, dynamic screening criteria generation, and structured candidate report synthesis, handling 1,000+ requests daily at sub-200ms latency.
+            \item Owned end-to-end delivery of 3 production systems in 2026, collaborating cross-functionally with business, engineering, and risk teams to ensure reliability, governance, and compliance.
+        \end{highlights}
+    \end{onecolentry}
+
+    \vspace{0.06 cm}
+
+    \begin{twocolentry}{Feb 2025 -- Apr 2026}
+        \textbf{Catastrophic Risk Modeling Intern}, Marsh McLennan
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Developed expertise in RMS/AIR catastrophe modeling workflows across Exposure, Hazard, Vulnerability, and Financial modules, enabling robust risk assessment across 125+ reinsurance portfolios.
+            \item Standardized exposure data for 125+ accounts across multiple perils, ensuring 99.9\% compliance with modeling standards and reducing manual data preprocessing errors by 30\%.
+            \item Performed geocoding and data validation, generating DQRS that improved spatial data accuracy by 25\% and cut manual validation time by 40\%.
+            \item Analyzed key risk metrics (AAL, PML, OEP, AEP) to deliver actionable portfolio risk insights, directly influencing reinsurance purchasing and reducing tail-risk exposure by 15\%.
+        \end{highlights}
+    \end{onecolentry}
+
+    \vspace{0.06 cm}
+
+    \begin{twocolentry}{Jan 2025 -- Feb 2025}
+        \textbf{Junior GenAI Engineer}, Visulon Inc.
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Built NLP-to-SQL systems using Ollama LLMs for natural language database querying, reducing average query turnaround time by 85\%.
+            \item Fine-tuned and deployed Stable Diffusion Sketch-to-Image generation models, accelerating design prototyping velocity by 3x for internal creative teams.
+            \item Designed end-to-end GenAI pipelines integrating LLMs, diffusion models, and REST APIs, enabling seamless integration with 5+ enterprise applications and handling 500+ daily inference requests.
+            \item Optimized GPU inference, prompt engineering, and latency for real-time deployment, achieving sub-100ms response times and reducing cloud GPU costs by 40\%.
+        \end{highlights}
+    \end{onecolentry}
+
+    \section{KEY PROJECTS \& IMPACT}
+
+    \begin{twocolentry}{2025}
+        \textbf{Deepfake Video Detection (Computer Vision)}
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Developed a \textbf{CNN-LSTM} model achieving \textbf{88\% accuracy} on FaceForensics++ and Celeb-DF-V2 datasets.
+            \item Implemented a complete computer vision pipeline: \textbf{face extraction}, \textbf{normalization}, and \textbf{temporal sequence modeling} for frame-by-frame analysis.
+            \item \textbf{Impact:} Demonstrated ability to catch subtle deepfake artifacts invisible to the human eye; model optimized for \textbf{real-time video inference} with minimal latency.
+        \end{highlights}
+    \end{onecolentry}
+
+    \vspace{0.06 cm}
+
+    \begin{twocolentry}{2024}
+        \textbf{Agentic AI System | End-to-End AI Solution}
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Owned end-to-end delivery of multi-agent AI system – from discovery to deployment and monitoring.
+            \item Built RAG pipeline with 95\% retrieval accuracy; integrated ChatGPT, Gemini, Claude APIs.
+            \item \textbf{Impact:} 85\% query reduction, 45\% accuracy improvement, 70\% manual effort reduction, 1000+ daily requests at 200ms latency.
+        \end{highlights}
+    \end{onecolentry}
+
+    \vspace{0.06 cm}
+
+    \begin{twocolentry}{2024}
+        \textbf{ML Pipeline Automation | MLOps}
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Built CI/CD pipeline for ML model deployment using GitHub Actions and Docker.
+            \item Implemented model monitoring and drift detection for production systems.
+            \item \textbf{Impact:} 93\% faster deployment (2 weeks $\rightarrow$ 2 hours).
+        \end{highlights}
+    \end{onecolentry}
+
+    \vspace{0.06 cm}
+
+    \begin{twocolentry}{2024}
+        \textbf{Resume Recommendation | Similar Candidates System}
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Built LLM-powered similar resumes feature with weighted-similarity matching and human feedback loop.
+            \item \textbf{Impact:} 45\% matching accuracy improvement, 40\% increase in recruitment team productivity.
+        \end{highlights}
+    \end{onecolentry}
+
+    \vspace{0.06 cm}
+
+    \begin{twocolentry}{2024}
+        \textbf{Customer Churn Prediction (Classification)}
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item Built ML models (Random Forest, SVM, Gradient Boosting) achieving 91\% accuracy.
+            \item Applied SMOTE, PCA, and feature engineering for model optimization.
+            \item \textbf{Impact:} 20\% improvement in retention targeting, reducing churn by 15\%.
+        \end{highlights}
+    \end{onecolentry}
+
+    \section{EDUCATION}
+    \begin{twocolentry}{May 2025}
+        \textbf{M.Sc. Statistics and Data Science}, NMIMS Mumbai
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item CGPA: 3.67 / 4.0 (Top 15\%) | Coursework: ML, DL, NLP, Big Data, Cloud Computing
+        \end{highlights}
+    \end{onecolentry}
+    \vspace{0.05 cm}
+    \begin{twocolentry}{2023}
+        \textbf{B.Sc. Statistics}, B.N. Bandodkar College, Mumbai
+    \end{twocolentry}
+    \vspace{0.03 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item CGPA: 9.7 / 10.0 (First Class with Distinction)
+        \end{highlights}
+    \end{onecolentry}
+
+    \section{CERTIFICATIONS \& ACHIEVEMENTS}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item AWS Certified ML - Specialty | Deep Learning Specialization | MLOps (Udacity)
+            \item Top 5\% Kaggle | Open Source: Hugging Face, Scikit-learn | Speaker: PyData Mumbai 2024
+        \end{highlights}
+    \end{onecolentry}
+
+\end{document}

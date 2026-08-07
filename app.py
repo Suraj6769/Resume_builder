@@ -142,6 +142,17 @@ def format_experience_to_latex(exp_data: list, template_id: str = "jake_ryan") -
       \\begin{{itemize}}[leftmargin=12pt, topsep=1pt, itemsep=1pt]
 {bullet_tex}
       \\end{{itemize}}"""
+        elif template_id == "suraj_template":
+            bullet_tex = "\n".join([f"            \\item {clean_latex_text(b)}" for b in bullets])
+            block = f"""    \\begin{{twocolentry}}{{{dates}}}
+        \\textbf{{{role}}}, {company}
+    \\end{{twocolentry}}
+    \\vspace{{0.03 cm}}
+    \\begin{{onecolentry}}
+        \\begin{{highlights}}
+{bullet_tex}
+        \\end{{highlights}}
+    \\end{{onecolentry}}"""
         else:
             bullet_tex = "\n".join([f"            \\item {clean_latex_text(b)}" for b in bullets])
             block = f"""    \\textbf{{{role}}}, {company} \\hfill {{{dates}}}\\\\
@@ -190,6 +201,18 @@ def format_projects_to_latex(projects_data: list, template_id: str = "jake_ryan"
       \\begin{{itemize}}[leftmargin=12pt, topsep=1pt, itemsep=1pt]
 {bullets_tex}
       \\end{{itemize}}"""
+        elif template_id == "suraj_template":
+            bullet_items = [f"            \\item {clean_latex_text(b)}" for b in bullets]
+            bullets_tex = "\n".join(bullet_items)
+            block = f"""    \\begin{{twocolentry}}{{{year}}}
+        \\textbf{{{title}}}
+    \\end{{twocolentry}}
+    \\vspace{{0.03 cm}}
+    \\begin{{onecolentry}}
+        \\begin{{highlights}}
+{bullets_tex}
+        \\end{{highlights}}
+    \\end{{onecolentry}}"""
         else:
             bullet_items = [f"            \\item {clean_latex_text(b)}" for b in bullets]
             bullets_tex = "\n".join(bullet_items)
@@ -224,6 +247,16 @@ def format_education_to_latex(edu_data: list, template_id: str = "jake_ryan") ->
             block = f"""    \\charterSubheading
       {{{inst}}}{{{loc}}}
       {{{degree}}}{{{year}}}"""
+        elif template_id == "suraj_template":
+            block = f"""    \\begin{{twocolentry}}{{{year}}}
+        \\textbf{{{degree}}}, {inst}
+    \\end{{twocolentry}}
+    \\vspace{{0.03 cm}}
+    \\begin{{onecolentry}}
+        \\begin{{highlights}}
+            \\item {detail}
+        \\end{{highlights}}
+    \\end{{onecolentry}}"""
         else:
             block = f"""    \\textbf{{{inst}}} \\hfill {{{year}}}\\\\
     \\textit{{{degree}}} -- {{{detail}}}"""

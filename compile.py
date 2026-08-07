@@ -339,8 +339,161 @@ TEMPLATE_EXECUTIVE_CHARTER = r"""
 \end{document}
 """
 
+# ==============================================================================
+# TEMPLATE 6: SURAJ EXECUTIVE (Detailed Charter Dossier Template)
+# ==============================================================================
+TEMPLATE_SURAJ_EXECUTIVE = r"""
+\documentclass[10pt, letterpaper]{article}
+
+\usepackage[
+    ignoreheadfoot,
+    top=1.5 cm,
+    bottom=1.5 cm,
+    left=1.2 cm,
+    right=1.2 cm,
+    footskip=0.8 cm,
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={{{NAME}} - Resume},
+    pdfauthor={{{NAME}}},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
+
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage{charter}
+
+\raggedright
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.1cm}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{-1pt}{0.2 cm}{0.15 cm}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.03 cm,
+        parsep=0.02 cm,
+        partopsep=0pt,
+        itemsep=0.02 cm,
+        leftmargin=0 cm + 8pt
+    ]
+}{
+    \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{0 cm + 0.00001 cm}{0 cm + 0.00001 cm}
+}{
+    \end{adjustwidth}
+}
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 3.5 cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \endonecolentry
+}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.3}
+}{
+    \par\kern\topsep
+}
+
+\let\hrefWithoutArrow\href
+
+\begin{document}
+    \newcommand{\AND}{\unskip
+        \cleaders\copy\ANDbox\hskip\wd\ANDbox
+        \ignorespaces
+    }
+    \newsavebox\ANDbox
+    \sbox\ANDbox{$|$}
+
+    \begin{header}
+        \fontsize{22 pt}{22 pt}\selectfont {{NAME}}
+
+        \vspace{3 pt}
+
+        \normalsize
+        {{CONTACT_LINE}}
+    \end{header}
+
+    \vspace{3 pt - 0.3 cm}
+
+    \section{PROFESSIONAL SUMMARY}
+    \begin{onecolentry}
+{{SUMMARY_SECTION}}
+    \end{onecolentry}
+
+    \section{TECHNICAL SKILLS}
+{{SKILLS_SECTION}}
+
+    \section{PROFESSIONAL EXPERIENCE}
+{{EXPERIENCE_SECTION}}
+
+    \section{KEY PROJECTS \& IMPACT}
+{{PROJECTS_SECTION}}
+
+    \section{EDUCATION}
+{{EDUCATION_SECTION}}
+
+    \section{CERTIFICATIONS \& ACHIEVEMENTS}
+    \begin{onecolentry}
+        \begin{highlights}
+{{CERTIFICATIONS_SECTION}}
+        \end{highlights}
+    \end{onecolentry}
+
+\end{document}
+"""
+
 # Registry of Available Templates
 TEMPLATES_REGISTRY = {
+    "suraj_template": {
+        "id": "suraj_template",
+        "name": "Suraj Executive (Detailed)",
+        "tag": "EXECUTIVE • DETAILED #1",
+        "badge": "NEW",
+        "preview_img": "/static/suraj_preview.png",
+        "description": "Comprehensive Executive Charter format built specifically for Data Scientists, ML Engineers, and Risk Analytics.",
+        "latex_template": TEMPLATE_SURAJ_EXECUTIVE
+    },
     "jake_ryan": {
         "id": "jake_ryan",
         "name": "Jake Ryan (ATS Standard)",
