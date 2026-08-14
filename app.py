@@ -487,18 +487,28 @@ async def generate_from_scratch(req: ScratchRequest):
     edu_tex = format_education_to_latex(p.get("education", []), template_id)
     certs_tex = format_certifications_to_latex(p.get("certifications", []))
     
-    clean_latex = latex_tmpl \
-        .replace("{{NAME}}", name) \
-        .replace("{{CONTACT_LINE}}", contact_line) \
-        .replace("{{SUMMARY_SECTION}}", summary_tex) \
-        .replace("{{SKILLS_SECTION}}", skills_tex) \
-        .replace("{{SKILLS_SIDEBAR}}", skills_tex) \
-        .replace("{{EXPERIENCE_SECTION}}", exp_tex) \
-        .replace("{{PROJECTS_SECTION}}", projects_tex) \
-        .replace("{{EDUCATION_SECTION}}", edu_tex) \
-        .replace("{{EDUCATION_SIDEBAR}}", edu_tex) \
-        .replace("{{CERTIFICATIONS_SECTION}}", certs_tex) \
-        .replace("{{CERTIFICATIONS_SIDEBAR}}", certs_tex)
+    replacements = {
+        "{{NAME}}": name,
+        "{{CONTACT_LINE}}": contact_line,
+        "{{SUMMARY_SECTION}}": summary_tex,
+        "{{SKILLS_SECTION}}": skills_tex,
+        "{{SKILLS_SIDEBAR}}": skills_tex,
+        "{{EXPERIENCE_SECTION}}": exp_tex,
+        "{{PROJECTS_SECTION}}": projects_tex,
+        "{{EDUCATION_SECTION}}": edu_tex,
+        "{{EDUCATION_SIDEBAR}}": edu_tex,
+        "{{CERTIFICATIONS_SECTION}}": certs_tex,
+        "{{CERTIFICATIONS_SIDEBAR}}": certs_tex
+    }
+    
+    clean_latex = latex_tmpl
+    for k, v in replacements.items():
+        clean_latex = clean_latex.replace(k, v)
+        
+    # Remove empty section headers if section content is empty
+    clean_latex = re.sub(r'\\section\{[^\}]*\}\s*\\begin\{onecolentry\}\s*\\begin\{highlights\}\s*\\end\{highlights\}\s*\\end\{onecolentry\}', '', clean_latex)
+    clean_latex = re.sub(r'\\section\{[^\}]*\}\s*\\begin\{onecolentry\}\s*\\end\{onecolentry\}', '', clean_latex)
+    clean_latex = re.sub(r'\\section\{[^\}]*\}\s*(?=\\section|\\end\{document\}|$)', '', clean_latex)
         
     req_id = str(uuid.uuid4())[:8]
     pdf_filename = f"resume_{req_id}.pdf"
@@ -635,18 +645,28 @@ async def tailor_and_generate(req: TailorRequest):
     edu_tex = format_education_to_latex(profile.get("education", []), template_id)
     certs_tex = format_certifications_to_latex(profile.get("certifications", []))
     
-    clean_latex = latex_tmpl \
-        .replace("{{NAME}}", name) \
-        .replace("{{CONTACT_LINE}}", contact_line) \
-        .replace("{{SUMMARY_SECTION}}", summary_tex) \
-        .replace("{{SKILLS_SECTION}}", skills_tex) \
-        .replace("{{SKILLS_SIDEBAR}}", skills_tex) \
-        .replace("{{EXPERIENCE_SECTION}}", exp_tex) \
-        .replace("{{PROJECTS_SECTION}}", projects_tex) \
-        .replace("{{EDUCATION_SECTION}}", edu_tex) \
-        .replace("{{EDUCATION_SIDEBAR}}", edu_tex) \
-        .replace("{{CERTIFICATIONS_SECTION}}", certs_tex) \
-        .replace("{{CERTIFICATIONS_SIDEBAR}}", certs_tex)
+    replacements = {
+        "{{NAME}}": name,
+        "{{CONTACT_LINE}}": contact_line,
+        "{{SUMMARY_SECTION}}": summary_tex,
+        "{{SKILLS_SECTION}}": skills_tex,
+        "{{SKILLS_SIDEBAR}}": skills_tex,
+        "{{EXPERIENCE_SECTION}}": exp_tex,
+        "{{PROJECTS_SECTION}}": projects_tex,
+        "{{EDUCATION_SECTION}}": edu_tex,
+        "{{EDUCATION_SIDEBAR}}": edu_tex,
+        "{{CERTIFICATIONS_SECTION}}": certs_tex,
+        "{{CERTIFICATIONS_SIDEBAR}}": certs_tex
+    }
+    
+    clean_latex = latex_tmpl
+    for k, v in replacements.items():
+        clean_latex = clean_latex.replace(k, v)
+        
+    # Remove empty section headers if section content is empty
+    clean_latex = re.sub(r'\\section\{[^\}]*\}\s*\\begin\{onecolentry\}\s*\\begin\{highlights\}\s*\\end\{highlights\}\s*\\end\{onecolentry\}', '', clean_latex)
+    clean_latex = re.sub(r'\\section\{[^\}]*\}\s*\\begin\{onecolentry\}\s*\\end\{onecolentry\}', '', clean_latex)
+    clean_latex = re.sub(r'\\section\{[^\}]*\}\s*(?=\\section|\\end\{document\}|$)', '', clean_latex)
     
     req_id = str(uuid.uuid4())[:8]
     pdf_filename = f"resume_{req_id}.pdf"

@@ -378,8 +378,7 @@ TEMPLATE_SURAJ_EXECUTIVE = r"""
 \usepackage{iftex}
 
 \ifPDFTeX
-    \input{glyphtounicode}
-    \pdfgentounicode=1
+    \InputIfFileExists{glyphtounicode.tex}{\pdfgentounicode=1}{}
     \usepackage[T1]{fontenc}
     \usepackage[utf8]{inputenc}
     \usepackage{lmodern}
@@ -426,6 +425,7 @@ TEMPLATE_SURAJ_EXECUTIVE = r"""
     \begin{paracol}{2}
 }{
     \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
     \endonecolentry
 }
 
@@ -454,7 +454,7 @@ TEMPLATE_SURAJ_EXECUTIVE = r"""
         {{CONTACT_LINE}}
     \end{header}
 
-    \vspace{3 pt - 0.3 cm}
+    \vspace{-0.15 cm}
 
     \section{PROFESSIONAL SUMMARY}
     \begin{onecolentry}
