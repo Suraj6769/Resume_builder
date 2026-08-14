@@ -24,9 +24,8 @@
             </a>
 
             <div class="nav-links">
-                <a href="#templatesSection" class="nav-item active">Templates</a>
-                <a href="#studioSection" class="nav-item">AI Tools</a>
-                <a href="#templatesSection" class="nav-item">Examples</a>
+                <a href="#wizardPage1" class="nav-item active">Fill Details</a>
+                <a href="#wizardPage2" class="nav-item" id="navLinkPage2">Choose Template & PDF</a>
                 <a href="#" class="nav-item">Pricing</a>
                 <a href="#" class="nav-item">Resources <i class="fa-solid fa-chevron-down"></i></a>
             </div>
@@ -38,101 +37,215 @@
         </div>
     </nav>
 
-    <!-- Texora Hero Section (Split Layout) -->
-    <section class="hero-section">
-        <div class="hero-split">
-            
-            <!-- Left Hero Column -->
-            <div class="hero-content">
-                <div class="hero-tag-badge">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> LaTeX Made Effortless
-                </div>
-                <h1 class="hero-title">
-                    Professional Resumes.<br>
-                    <span class="purple-gradient">Made Simple.</span>
-                </h1>
-                <p class="hero-subtitle">
-                    Create ATS-friendly LaTeX resumes in minutes — no coding, no hassle. Choose a template, fill in your details, or upload your existing resume to instantly generate a beautiful, professional PDF.
-                </p>
-
-                <div class="hero-cta-group">
-                    <a href="#templatesSection" class="btn-hero-purple"><i class="fa-solid fa-receipt"></i> Explore Templates</a>
-                    <button class="btn-hero-outline" id="btnBuildAiHero"><i class="fa-solid fa-wand-magic-sparkles"></i> Build with AI</button>
-                </div>
-
-                <!-- Feature Icons Row -->
-                <div class="hero-features-row">
-                    <div class="feature-item">
-                        <div class="feat-icon"><i class="fa-solid fa-shield"></i></div>
-                        <div>
-                            <div class="feat-title">ATS Optimized</div>
-                            <div class="feat-desc">Pass screening with ease</div>
-                        </div>
-                    </div>
-
-                    <div class="feature-item">
-                        <div class="feat-icon"><i class="fa-solid fa-bolt"></i></div>
-                        <div>
-                            <div class="feat-title">AI-Powered</div>
-                            <div class="feat-desc">Auto-extract & smart suggestions</div>
-                        </div>
-                    </div>
-
-                    <div class="feature-item">
-                        <div class="feat-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div>
-                        <div>
-                            <div class="feat-title">Export Ready</div>
-                            <div class="feat-desc">PDF, TEX, and more</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Hero Card Mockup -->
-            <div class="hero-preview-wrapper">
-                <div class="floating-sparkle sparkle-1">✦</div>
-                <div class="floating-sparkle sparkle-2">✦</div>
-                <div class="hero-resume-card">
-                    <div class="mock-header">
-                        <div class="mock-name">ALEX JOHNSON</div>
-                        <div class="mock-role">SOFTWARE ENGINEER</div>
-                        <div class="mock-contact">alex.johnson@email.com • (123) 456-7890 • linkedin.com/in/alexjohnson • github.com/alexjohnson</div>
-                    </div>
-                    <div class="mock-section">
-                        <div class="mock-sec-title">PROFESSIONAL SUMMARY</div>
-                        <div class="mock-text">Results-driven software engineer with 5+ years of experience building scalable web applications and leading cross-functional teams. Passionate about clean code, system design, and delivering impactful solutions.</div>
-                    </div>
-                    <div class="mock-section">
-                        <div class="mock-sec-title">EXPERIENCE</div>
-                        <div class="mock-job">
-                            <div class="mock-job-title">Senior Software Engineer <span>2021 – Present</span></div>
-                            <div class="mock-company">Tech Solutions Inc. <span>San Francisco, CA</span></div>
-                            <div class="mock-bullet">• Led a team of 5 engineers to build a microservices-based platform</div>
-                            <div class="mock-bullet">• Improved system performance by 40% through optimization</div>
-                        </div>
-                    </div>
-                    <div class="mock-section">
-                        <div class="mock-sec-title">EDUCATION</div>
-                        <div class="mock-job">
-                            <div class="mock-job-title">B.S. in Computer Science <span>2015 – 2019</span></div>
-                            <div class="mock-company">University of Technology <span>Austin, TX</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Main Content Container -->
+    <!-- App Container -->
     <main class="main-content">
-        
-        <!-- SECTION 1: TEMPLATE GALLERY -->
-        <section class="section-container" id="templatesSection">
-            <div class="section-center-meta">
-                <span class="pill-meta">Choose a Design</span>
-                <h2 class="section-title-large">Beautiful Templates for Every Style</h2>
-                <p class="section-subtitle-text">Pick a template that reflects your personality and profession.</p>
+
+        <!-- Top Mode Selector Bar -->
+        <div class="top-mode-wrapper">
+            <div class="selected-tmpl-bar">
+                Selected Template: <strong id="activeTemplateName" class="text-purple">Suraj Executive (Detailed)</strong>
+            </div>
+            <div class="studio-mode-bar">
+                <div class="mode-pills-purple">
+                    <button class="mode-pill active" id="modeScratchBtn"><i class="fa-solid fa-pen-to-square"></i> Comprehensive Profile Builder</button>
+                    <button class="mode-pill" id="modeTailorBtn"><i class="fa-solid fa-bullseye"></i> AI Tailor to Job Description</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 1 OF 2: PROFILE & DETAILS FORM WIZARD -->
+        <section class="wizard-page active" id="wizardPage1">
+            
+            <div class="two-column-form-grid">
+                
+                <!-- LEFT COLUMN -->
+                <div class="form-column left-column">
+                    
+                    <!-- Upload Resume Card -->
+                    <div class="form-card upload-card">
+                        <div class="card-sec-header">
+                            <i class="fa-solid fa-cloud-arrow-up text-purple"></i> Upload Existing Resume (Auto-Extract All Fields)
+                        </div>
+                        <div class="dropzone" id="resumeDropZone">
+                            <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+                            <div class="dropzone-text">Drag & drop your <strong>PDF, DOCX, or TEX</strong> file here</div>
+                            <div class="dropzone-sub">or click to browse</div>
+                            <div class="dropzone-hint" id="resumeFileInfo">Supports .pdf, .docx, .tex (DeepSeek extracts all fields instantly)</div>
+                            <input type="file" id="resumeFileInput" accept=".pdf,.docx,.doc,.tex,.txt" hidden>
+                        </div>
+                    </div>
+
+                    <!-- Section 1: Contact & Summary -->
+                    <div class="form-card">
+                        <div class="card-sec-header">
+                            <span class="num-badge">1</span> Contact & Summary
+                        </div>
+                        
+                        <div class="form-grid-2col">
+                            <div class="form-field full-width">
+                                <label>Full Name *</label>
+                                <input type="text" id="scratchName" placeholder="Enter your full name">
+                            </div>
+
+                            <div class="form-field">
+                                <label>Location *</label>
+                                <input type="text" id="scratchLoc" placeholder="City, State/Country">
+                            </div>
+
+                            <div class="form-field">
+                                <label>Phone *</label>
+                                <input type="text" id="scratchPhone" placeholder="+91 12345 67890">
+                            </div>
+
+                            <div class="form-field">
+                                <label>Email *</label>
+                                <input type="email" id="scratchEmail" placeholder="your.email@example.com">
+                            </div>
+
+                            <div class="form-field">
+                                <label>LinkedIn URL</label>
+                                <input type="text" id="scratchLinkedin" placeholder="https://linkedin.com/in/yourprofile">
+                            </div>
+
+                            <div class="form-field full-width">
+                                <label>GitHub / Portfolio URL</label>
+                                <input type="text" id="scratchGithub" placeholder="https://github.com/yourusername">
+                            </div>
+
+                            <div class="form-field full-width">
+                                <label>Professional Summary *</label>
+                                <textarea id="scratchSummary" rows="4" maxlength="1000" placeholder="Write a brief summary of your professional background, key strengths, and what you bring to the table..."></textarea>
+                                <div class="char-counter"><span id="summaryCharCount">0</span> / 1000</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Skills & Tools -->
+                    <div class="form-card">
+                        <div class="card-sec-header">
+                            <span class="num-badge">2</span> Skills & Tools
+                        </div>
+
+                        <div class="form-grid-1col">
+                            <div class="form-field">
+                                <label>Core Domains / Competencies *</label>
+                                <input type="text" id="skillDomains" placeholder="e.g., Machine Learning, Artificial Intelligence, Data Science">
+                            </div>
+
+                            <div class="form-field">
+                                <label>Languages / Core Skills *</label>
+                                <input type="text" id="skillLanguages" placeholder="e.g., Python, SQL, R, Java, etc.">
+                            </div>
+
+                            <div class="form-field">
+                                <label>Frameworks / Libraries / Systems *</label>
+                                <input type="text" id="skillLibraries" placeholder="e.g., TensorFlow, PyTorch, Scikit-learn, AWS, Docker, etc.">
+                            </div>
+
+                            <div class="form-field">
+                                <label>Tools & Platforms (Optional)</label>
+                                <input type="text" id="skillTools" placeholder="e.g., Git, Jupyter, Power BI, Tableau, etc.">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Left Column Nav Buttons -->
+                    <div class="left-col-nav">
+                        <button type="button" class="btn-nav-outline" id="btnLeftBack"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                        <button type="button" class="btn-nav-purple-large" id="btnLeftNext">Next <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+
+                </div>
+
+
+                <!-- RIGHT COLUMN -->
+                <div class="form-column right-column">
+
+                    <!-- Section 3: Work Experience -->
+                    <div class="form-card">
+                        <div class="card-sec-header">
+                            <span class="num-badge">3</span> Work Experience
+                        </div>
+                        <div class="sec-sub-label">Add Work Experience *</div>
+
+                        <div id="expContainer" class="dynamic-cards-list">
+                            <!-- Work Experience cards added dynamically -->
+                        </div>
+
+                        <button type="button" class="btn-add-another" id="btnAddExp">
+                            <i class="fa-solid fa-plus"></i> Add Another Experience
+                        </button>
+                    </div>
+
+                    <!-- Section 4: Projects -->
+                    <div class="form-card">
+                        <div class="card-sec-header">
+                            <span class="num-badge">4</span> Projects
+                        </div>
+                        <div class="sec-sub-label">Add Projects</div>
+
+                        <div id="projectsContainer" class="dynamic-cards-list">
+                            <!-- Project cards added dynamically -->
+                        </div>
+
+                        <button type="button" class="btn-add-another" id="btnAddProject">
+                            <i class="fa-solid fa-plus"></i> Add Another Project
+                        </button>
+                    </div>
+
+                    <!-- Section 5: Education & Certs -->
+                    <div class="form-card">
+                        <div class="card-sec-header">
+                            <span class="num-badge">5</span> Education & Certs
+                        </div>
+
+                        <!-- Sub-tabs: Education vs Certifications -->
+                        <div class="sub-tab-row">
+                            <button type="button" class="sub-tab active" id="subTabEdu">Education</button>
+                            <button type="button" class="sub-tab" id="subTabCerts">Certifications</button>
+                        </div>
+
+                        <div id="subContentEdu" class="sub-tab-content active">
+                            <div id="eduContainer" class="dynamic-cards-list">
+                                <!-- Education cards added dynamically -->
+                            </div>
+                            <button type="button" class="btn-add-another" id="btnAddEdu">
+                                <i class="fa-solid fa-plus"></i> Add Another Education
+                            </button>
+                        </div>
+
+                        <div id="subContentCerts" class="sub-tab-content hidden">
+                            <div class="form-field full-width">
+                                <label>Certifications & Licenses (One per line)</label>
+                                <textarea id="scratchCerts" rows="4" placeholder="e.g., AWS Certified Solutions Architect\nCFA Level 1\nGoogle Professional Data Engineer"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Page 1 Footer Navigation & Info Bar -->
+            <div class="wizard-footer-bar">
+                <div class="page-pagination">
+                    Page 1 of 2 &nbsp;<span class="dot active">●</span> <span class="dot">○</span>
+                </div>
+                <div class="info-banner-pill">
+                    <i class="fa-solid fa-circle-info text-purple"></i> Fill in all the details above. You can review on the next page and then generate your PDF.
+                </div>
+            </div>
+
+        </section>
+
+        <!-- PAGE 2 OF 2: TEMPLATE SELECTION & LIVE PDF STUDIO WORKSPACE -->
+        <section class="wizard-page hidden" id="wizardPage2">
+            
+            <!-- Section Title -->
+            <div class="section-center-meta margin-top-20">
+                <span class="pill-meta">Page 2 of 2 — Review & Generate</span>
+                <h2 class="section-title-large">Choose a Design & Compile Resume</h2>
+                <p class="section-subtitle-text">Pick your favorite template style and review your compiled 1-page PDF.</p>
             </div>
 
             <!-- Category Filter Pills -->
@@ -147,148 +260,23 @@
             </div>
 
             <!-- Templates Card Grid -->
-            <div class="templates-grid" id="templatesGrid">
+            <div class="templates-grid margin-bottom-30" id="templatesGrid">
                 <!-- Template Cards rendered via JS -->
             </div>
-        </section>
 
-        <!-- SECTION 2: SIDE-BY-SIDE STUDIO WORKSPACE -->
-        <section class="section-container" id="studioSection">
-            <div class="section-center-meta">
-                <span class="pill-meta">Workspace Studio</span>
-                <h2 class="section-title-large">Universal AI Resume Studio</h2>
-                <p class="section-subtitle-text">Selected Template: <strong id="activeTemplateName" class="text-purple">Suraj Executive (Detailed)</strong></p>
-            </div>
-
-            <div class="studio-mode-bar">
-                <div class="mode-pills-purple">
-                    <button class="mode-pill active" id="modeScratchBtn"><i class="fa-solid fa-pen-to-square"></i> Comprehensive Profile Builder</button>
-                    <button class="mode-pill" id="modeTailorBtn"><i class="fa-solid fa-bullseye"></i> AI Tailor to Job Description</button>
-                </div>
-            </div>
-
-            <div class="workspace-grid">
+            <!-- Side-by-Side Live Workspace Studio -->
+            <div class="workspace-grid" id="page2Workspace">
                 
-                <!-- Left Input Panel -->
+                <!-- Left Options & JD Tailor Panel -->
                 <div class="workspace-panel input-panel">
                     
-                    <!-- Upload Resume Box -->
-                    <div class="panel-card upload-card">
-                        <div class="card-title"><i class="fa-solid fa-cloud-arrow-up text-purple"></i> Upload Existing Resume (Auto-Extract All Fields)</div>
-                        <div class="dropzone" id="resumeDropZone">
-                            <i class="fa-solid fa-file-arrow-up dropzone-icon"></i>
-                            <div class="dropzone-text">Drag & drop your <strong>PDF, DOCX, or TEX</strong> file here</div>
-                            <div class="dropzone-hint" id="resumeFileInfo">DeepSeek extracts all fields (Contact, Skills, Experience, Projects, Education, Certs)</div>
-                            <input type="file" id="resumeFileInput" accept=".pdf,.docx,.doc,.tex,.txt" hidden>
-                        </div>
-                    </div>
-
-                    <!-- Comprehensive Profile Form (Scratch & Extracted Editor) -->
-                    <div class="panel-card" id="scratchInputCard">
-                        <div class="card-title"><i class="fa-solid fa-user-pen text-purple"></i> Candidate Profile Details</div>
-                        
-                        <!-- Form Section Accordion/Tabs -->
-                        <div class="form-tabs-bar">
-                            <button class="form-tab active" data-tab="tab-contact">Contact & Summary</button>
-                            <button class="form-tab" data-tab="tab-skills">Skills & Tools</button>
-                            <button class="form-tab" data-tab="tab-exp">Work Experience</button>
-                            <button class="form-tab" data-tab="tab-projects">Projects</button>
-                            <button class="form-tab" data-tab="tab-edu">Education & Certs</button>
-                        </div>
-
-                        <div class="form-tab-content active" id="tab-contact">
-                            <div class="scratch-form-grid">
-                                <div class="form-field">
-                                    <label>Full Name *</label>
-                                    <input type="text" id="scratchName" placeholder="e.g. Suraj Vishwakarma">
-                                </div>
-                                <div class="form-field">
-                                    <label>Location</label>
-                                    <input type="text" id="scratchLoc" placeholder="e.g. Mumbai, India">
-                                </div>
-                                <div class="form-field">
-                                    <label>Email *</label>
-                                    <input type="email" id="scratchEmail" placeholder="e.g. suraj.v@example.com">
-                                </div>
-                                <div class="form-field">
-                                    <label>Phone *</label>
-                                    <input type="text" id="scratchPhone" placeholder="e.g. +91 98765 43210">
-                                </div>
-                                <div class="form-field">
-                                    <label>LinkedIn URL</label>
-                                    <input type="text" id="scratchLinkedin" placeholder="e.g. https://linkedin.com/in/surajv">
-                                </div>
-                                <div class="form-field">
-                                    <label>GitHub / Portfolio URL</label>
-                                    <input type="text" id="scratchGithub" placeholder="e.g. https://github.com/surajv">
-                                </div>
-                                <div class="form-field full-width">
-                                    <label>Professional Summary</label>
-                                    <textarea id="scratchSummary" rows="3" placeholder="Brief summary of your professional background and core strengths..."></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-tab-content" id="tab-skills">
-                            <div class="scratch-form-grid">
-                                <div class="form-field full-width">
-                                    <label>Core Domains / Competencies</label>
-                                    <input type="text" id="skillDomains" placeholder="e.g. Machine Learning, Financial Modeling, Cloud Architecture">
-                                </div>
-                                <div class="form-field full-width">
-                                    <label>Languages / Core Skills</label>
-                                    <input type="text" id="skillLanguages" placeholder="e.g. Python, R, SQL, Java, C++">
-                                </div>
-                                <div class="form-field full-width">
-                                    <label>Frameworks / Libraries / Systems</label>
-                                    <input type="text" id="skillLibraries" placeholder="e.g. PyTorch, TensorFlow, Scikit-learn, React, FastAPI">
-                                </div>
-                                <div class="form-field full-width">
-                                    <label>Tools / Software / Cloud</label>
-                                    <input type="text" id="skillTools" placeholder="e.g. AWS, Docker, Git, Tableau, Power BI">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-tab-content" id="tab-exp">
-                            <div id="expContainer" class="dynamic-cards-list">
-                                <!-- Experience cards added dynamically -->
-                            </div>
-                            <button type="button" class="btn-add-card" id="btnAddExp"><i class="fa-solid fa-plus"></i> Add Work Experience Entry</button>
-                        </div>
-
-                        <div class="form-tab-content" id="tab-projects">
-                            <div id="projectsContainer" class="dynamic-cards-list">
-                                <!-- Project cards added dynamically -->
-                            </div>
-                            <button type="button" class="btn-add-card" id="btnAddProject"><i class="fa-solid fa-plus"></i> Add Project Entry</button>
-                        </div>
-
-                        <div class="form-tab-content" id="tab-edu">
-                            <div id="eduContainer" class="dynamic-cards-list">
-                                <!-- Education cards added dynamically -->
-                            </div>
-                            <button type="button" class="btn-add-card" id="btnAddEdu"><i class="fa-solid fa-plus"></i> Add Education Entry</button>
-
-                            <div class="form-field full-width margin-top-12">
-                                <label>Certifications & Licenses (Comma or Line Separated)</label>
-                                <textarea id="scratchCerts" rows="2" placeholder="e.g. AWS Certified Solutions Architect, CFA Level 1"></textarea>
-                            </div>
-                        </div>
-
-                        <button class="btn-generate-purple margin-top-16" id="btnGenerateScratch">
-                            <i class="fa-solid fa-bolt-lightning"></i> Compile & Render PDF
-                        </button>
-                    </div>
-
-                    <!-- Job Description Panel (Tailor Mode) -->
-                    <div class="panel-card hidden" id="tailorInputCard">
+                    <div class="panel-card" id="tailorInputCard">
                         <div class="card-title-row">
-                            <div class="card-title"><i class="fa-solid fa-briefcase text-purple"></i> Target Job Description</div>
+                            <div class="card-title"><i class="fa-solid fa-briefcase text-purple"></i> Target Job Description (Optional AI Tailoring)</div>
                             <input type="hidden" id="modelSelect" value="deepseek/deepseek-chat">
                         </div>
 
-                        <textarea id="jdInput" placeholder="Optional: Paste target Job Description here to AI-tailor your resume, or leave blank to directly convert your uploaded resume into LaTeX!"></textarea>
+                        <textarea id="jdInput" placeholder="Optional: Paste target Job Description here to AI-tailor your summary, skills, and projects, or leave blank to compile directly..."></textarea>
 
                         <div class="sample-chips-row">
                             <span class="chip-label">Sample JDs:</span>
@@ -297,9 +285,12 @@
                             <button class="sample-chip" data-sample="datasci">Senior Data Scientist</button>
                         </div>
 
-                        <button class="btn-generate-purple" id="btnGenerate">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI Tailor & Compile PDF
-                        </button>
+                        <div class="page2-action-btns">
+                            <button class="btn-nav-outline" id="btnBackToPage1"><i class="fa-solid fa-arrow-left"></i> ← Back to Details</button>
+                            <button class="btn-generate-purple" id="btnGenerate">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Compile & Render PDF
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -323,7 +314,7 @@
                         <div class="preview-placeholder" id="pdfPlaceholder">
                             <div class="placeholder-icon"><i class="fa-regular fa-file-pdf"></i></div>
                             <h3>Your Compiled 1-Page PDF Preview Will Render Here</h3>
-                            <p>Upload a resume file or fill in your profile details above, then click <strong>Compile & Render PDF</strong>.</p>
+                            <p>Click <strong>Compile & Render PDF</strong> to view your compiled resume.</p>
                         </div>
 
                         <iframe id="pdfFrame" class="hidden" src="" frameborder="0"></iframe>
@@ -335,6 +326,17 @@
                 </div>
 
             </div>
+
+            <!-- Page 2 Footer Navigation & Info Bar -->
+            <div class="wizard-footer-bar margin-top-30">
+                <div class="page-pagination">
+                    Page 2 of 2 &nbsp;<span class="dot">○</span> <span class="dot active">●</span>
+                </div>
+                <div class="info-banner-pill">
+                    <i class="fa-solid fa-circle-check text-success"></i> Review your template selection and PDF above. You can go back anytime to edit your details.
+                </div>
+            </div>
+
         </section>
 
     </main>

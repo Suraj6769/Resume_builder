@@ -1,17 +1,47 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // UI Elements
-    const templatesGrid = document.getElementById('templatesGrid');
-    const activeTemplateName = document.getElementById('activeTemplateName');
+    // Page Elements
+    const wizardPage1 = document.getElementById('wizardPage1');
+    const wizardPage2 = document.getElementById('wizardPage2');
+    const navLinkPage2 = document.getElementById('navLinkPage2');
     
-    // Mode Switcher Pills
-    const modeTailorBtn = document.getElementById('modeTailorBtn');
-    const modeScratchBtn = document.getElementById('modeScratchBtn');
-    const tailorInputCard = document.getElementById('tailorInputCard');
-    const scratchInputCard = document.getElementById('scratchInputCard');
+    // Page 1 Navigation Buttons
+    const btnLeftNext = document.getElementById('btnLeftNext');
+    const btnLeftBack = document.getElementById('btnLeftBack');
+    const btnBackToPage1 = document.getElementById('btnBackToPage1');
+    const btnGetStarted = document.getElementById('btnGetStarted');
+    const btnBuildAiHero = document.getElementById('btnBuildAiHero');
     
-    // Form Tabs Elements
-    const formTabs = document.querySelectorAll('.form-tab');
-    const formTabContents = document.querySelectorAll('.form-tab-content');
+    // Character Counter
+    const scratchSummary = document.getElementById('scratchSummary');
+    const summaryCharCount = document.getElementById('summaryCharCount');
+    
+    if (scratchSummary && summaryCharCount) {
+        scratchSummary.addEventListener('input', () => {
+            summaryCharCount.textContent = scratchSummary.value.length;
+        });
+    }
+
+    // Sub-tabs (Education vs Certifications)
+    const subTabEdu = document.getElementById('subTabEdu');
+    const subTabCerts = document.getElementById('subTabCerts');
+    const subContentEdu = document.getElementById('subContentEdu');
+    const subContentCerts = document.getElementById('subContentCerts');
+
+    if (subTabEdu && subTabCerts) {
+        subTabEdu.addEventListener('click', () => {
+            subTabEdu.classList.add('active');
+            subTabCerts.classList.remove('active');
+            subContentEdu.classList.remove('hidden');
+            subContentCerts.classList.add('hidden');
+        });
+
+        subTabCerts.addEventListener('click', () => {
+            subTabCerts.classList.add('active');
+            subTabEdu.classList.remove('active');
+            subContentCerts.classList.remove('hidden');
+            subContentEdu.classList.add('hidden');
+        });
+    }
 
     // Dynamic Lists Containers
     const expContainer = document.getElementById('expContainer');
@@ -26,13 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const resumeFileInput = document.getElementById('resumeFileInput');
     const resumeFileInfo = document.getElementById('resumeFileInfo');
     
-    // Input & Generate Buttons
+    // Page 2 & Generate Buttons
+    const templatesGrid = document.getElementById('templatesGrid');
+    const activeTemplateName = document.getElementById('activeTemplateName');
     const modelSelect = document.getElementById('modelSelect');
     const jdInput = document.getElementById('jdInput');
     const btnGenerate = document.getElementById('btnGenerate');
-    const btnGenerateScratch = document.getElementById('btnGenerateScratch');
-    const btnGetStarted = document.getElementById('btnGetStarted');
-    const btnBuildAiHero = document.getElementById('btnBuildAiHero');
     
     // Preview Elements
     const pdfPlaceholder = document.getElementById('pdfPlaceholder');
@@ -48,25 +77,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Application State
     let selectedTemplateId = 'suraj_template';
-    let currentMode = 'scratch';
     let parsedProfile = null;
     let allTemplates = [];
 
-    // Form Tab Switching
-    formTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            formTabs.forEach(t => t.classList.remove('active'));
-            formTabContents.forEach(c => c.classList.remove('active'));
-            tab.classList.add('active');
-            const targetId = tab.getAttribute('data-tab');
-            document.getElementById(targetId).classList.add('active');
-        });
-    });
+    // Page Switching (Wizard Navigation)
+    function gotoPage(pageNum) {
+        if (pageNum === 1) {
+            wizardPage1.classList.remove('hidden');
+            wizardPage2.classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (pageNum === 2) {
+            wizardPage1.classList.add('hidden');
+            wizardPage2.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Auto compile PDF when entering Page 2
+            const currentProfile = collectProfileFromForm();
+            compileAndDisplayPdf(currentProfile);
+        }
+    }
 
-    // Dynamic Card Builders
-    btnAddExp.addEventListener('click', () => addExperienceCard({}));
-    btnAddProject.addEventListener('click', () => addProjectCard({}));
-    btnAddEdu.addEventListener('click', () => addEducationCard({}));
+    if (btnLeftNext) btnLeftNext.addEventListener('click', () => gotoPage(2));
+    if (btnLeftBack) btnLeftBack.addEventListener('click', () => gotoPage(1));
+    if (btnBackToPage1) btnBackToPage1.addEventListener('click', () => gotoPage(1));
+    if (navLinkPage2) navLinkPage2.addEventListener('click', (e) => { e.preventDefault(); gotoPage(2); });
+    if (btnGetStarted) btnGetStarted.addEventListener('click', () => gotoPage(1));
+    if (btnBuildAiHero) btnBuildAiHero.addEventListener('click', () => gotoPage(1));
+
+    // Dynamic Card Helpers
+    if (btnAddExp) btnAddExp.addEventListener('click', () => addExperienceCard({}));
+    if (btnAddProject) btnAddProject.addEventListener('click', () => addProjectCard({}));
+    if (btnAddEdu) btnAddEdu.addEventListener('click', () => addEducationCard({}));
 
     function addExperienceCard(data = {}) {
         const card = document.createElement('div');
@@ -76,24 +117,24 @@ document.addEventListener('DOMContentLoaded', () => {
             <button type="button" class="card-remove-btn"><i class="fa-solid fa-xmark"></i></button>
             <div class="scratch-form-grid">
                 <div class="form-field">
-                    <label>Role / Job Title</label>
-                    <input type="text" class="exp-role" value="${data.role || data.title || ''}" placeholder="e.g. Senior Software Engineer">
+                    <label>Job Title *</label>
+                    <input type="text" class="exp-role" value="${data.role || data.title || ''}" placeholder="e.g. Data Scientist">
                 </div>
                 <div class="form-field">
-                    <label>Company / Organization</label>
-                    <input type="text" class="exp-company" value="${data.company || data.organization || ''}" placeholder="e.g. Google">
+                    <label>Company Name *</label>
+                    <input type="text" class="exp-company" value="${data.company || data.organization || ''}" placeholder="e.g. ABC Analytics Pvt. Ltd.">
                 </div>
                 <div class="form-field">
                     <label>Location</label>
-                    <input type="text" class="exp-loc" value="${data.location || ''}" placeholder="e.g. Mountain View, CA">
+                    <input type="text" class="exp-loc" value="${data.location || ''}" placeholder="e.g. Mumbai, India">
                 </div>
                 <div class="form-field">
-                    <label>Dates</label>
-                    <input type="text" class="exp-dates" value="${data.dates || ''}" placeholder="e.g. Jan 2022 -- Present">
+                    <label>Duration *</label>
+                    <input type="text" class="exp-dates" value="${data.dates || ''}" placeholder="e.g. MM/YYYY -- MM/YYYY">
                 </div>
                 <div class="form-field full-width">
-                    <label>Key Bullet Points (One per line)</label>
-                    <textarea class="exp-bullets" rows="3" placeholder="Led a team of 5 engineers...\nImproved system latency by 35%...">${bulletsText}</textarea>
+                    <label>Key Responsibilities & Achievements *</label>
+                    <textarea class="exp-bullets" rows="3" placeholder="Describe your key responsibilities and achievements. Use bullet points for best results.">${bulletsText}</textarea>
                 </div>
             </div>
         `;
@@ -109,16 +150,16 @@ document.addEventListener('DOMContentLoaded', () => {
             <button type="button" class="card-remove-btn"><i class="fa-solid fa-xmark"></i></button>
             <div class="scratch-form-grid">
                 <div class="form-field">
-                    <label>Project Title</label>
-                    <input type="text" class="proj-title" value="${data.title || data.name || ''}" placeholder="e.g. Real-Time Analytics Pipeline">
+                    <label>Project Title *</label>
+                    <input type="text" class="proj-title" value="${data.title || data.name || ''}" placeholder="e.g. Credit Risk Prediction Model">
                 </div>
                 <div class="form-field">
-                    <label>Year / Dates</label>
+                    <label>Duration</label>
                     <input type="text" class="proj-year" value="${data.year || data.dates || ''}" placeholder="e.g. 2024">
                 </div>
                 <div class="form-field full-width">
-                    <label>Project Details / Impact (One per line)</label>
-                    <textarea class="proj-bullets" rows="3" placeholder="Architected distributed Kafka pipeline...\nImpact: Processed 1M+ events/sec.">${bulletsText}</textarea>
+                    <label>Description & Outcomes *</label>
+                    <textarea class="proj-bullets" rows="3" placeholder="Describe the problem, your approach, key technologies used, and outcomes.">${bulletsText}</textarea>
                 </div>
             </div>
         `;
@@ -133,24 +174,24 @@ document.addEventListener('DOMContentLoaded', () => {
             <button type="button" class="card-remove-btn"><i class="fa-solid fa-xmark"></i></button>
             <div class="scratch-form-grid">
                 <div class="form-field">
-                    <label>Degree / Field of Study</label>
-                    <input type="text" class="edu-degree" value="${data.degree || data.title || ''}" placeholder="e.g. B.S. in Computer Science">
+                    <label>Degree / Course *</label>
+                    <input type="text" class="edu-degree" value="${data.degree || data.title || ''}" placeholder="e.g. M.Sc. in Data Science">
                 </div>
                 <div class="form-field">
-                    <label>University / Institution</label>
-                    <input type="text" class="edu-inst" value="${data.institution || data.school || ''}" placeholder="e.g. Stanford University">
+                    <label>Institute / University *</label>
+                    <input type="text" class="edu-inst" value="${data.institution || data.school || ''}" placeholder="e.g. NMIMS, Mumbai">
                 </div>
                 <div class="form-field">
                     <label>Location</label>
-                    <input type="text" class="edu-loc" value="${data.location || ''}" placeholder="e.g. Stanford, CA">
+                    <input type="text" class="edu-loc" value="${data.location || ''}" placeholder="e.g. Mumbai, India">
                 </div>
                 <div class="form-field">
                     <label>Graduation Year</label>
-                    <input type="text" class="edu-year" value="${data.year || data.dates || ''}" placeholder="e.g. 2023">
+                    <input type="text" class="edu-year" value="${data.year || data.dates || ''}" placeholder="e.g. 2025">
                 </div>
                 <div class="form-field full-width">
-                    <label>Details / GPA / Coursework</label>
-                    <input type="text" class="edu-detail" value="${data.detail || data.gpa || ''}" placeholder="e.g. GPA: 3.9 / 4.0, Honors">
+                    <label>Grade / CGPA (Optional)</label>
+                    <input type="text" class="edu-detail" value="${data.detail || data.gpa || ''}" placeholder="e.g. 8.5 / 10">
                 </div>
             </div>
         `;
@@ -168,7 +209,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (p.phone) document.getElementById('scratchPhone').value = p.phone;
         if (p.linkedin) document.getElementById('scratchLinkedin').value = p.linkedin;
         if (p.github) document.getElementById('scratchGithub').value = p.github;
-        if (p.summary) document.getElementById('scratchSummary').value = p.summary;
+        if (p.summary) {
+            document.getElementById('scratchSummary').value = p.summary;
+            if (summaryCharCount) summaryCharCount.textContent = p.summary.length;
+        }
         
         if (p.skills) {
             if (typeof p.skills === 'object') {
@@ -272,34 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Mode Switching
-    modeTailorBtn.addEventListener('click', () => setMode('tailor'));
-    modeScratchBtn.addEventListener('click', () => setMode('scratch'));
-    
-    btnGetStarted.addEventListener('click', () => {
-        document.getElementById('templatesSection').scrollIntoView({ behavior: 'smooth' });
-    });
-
-    btnBuildAiHero.addEventListener('click', () => {
-        setMode('scratch');
-        document.getElementById('studioSection').scrollIntoView({ behavior: 'smooth' });
-    });
-
-    function setMode(mode) {
-        currentMode = mode;
-        if (mode === 'tailor') {
-            modeTailorBtn.classList.add('active');
-            modeScratchBtn.classList.remove('active');
-            tailorInputCard.classList.remove('hidden');
-            scratchInputCard.classList.add('hidden');
-        } else {
-            modeScratchBtn.classList.add('active');
-            modeTailorBtn.classList.remove('active');
-            scratchInputCard.classList.remove('hidden');
-            tailorInputCard.classList.add('hidden');
-        }
-    }
-
     // Load Template Cards Grid from /api/templates
     async function loadTemplates() {
         try {
@@ -345,7 +361,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active-selected'));
         renderTemplateGrid(allTemplates);
         showToast(`Selected Template: ${tmpl.name}`, 'info');
-        document.getElementById('studioSection').scrollIntoView({ behavior: 'smooth' });
+        
+        // Re-compile PDF if on Page 2
+        if (!wizardPage2.classList.contains('hidden')) {
+            compileAndDisplayPdf(collectProfileFromForm());
+        }
     }
 
     // Texora Category Filter Pills
@@ -408,12 +428,11 @@ document.addEventListener('DOMContentLoaded', () => {
             resumeFileInfo.textContent = `✓ Parsed "${file.name}" (${data.profile.name || 'Candidate'})`;
             showToast(`Extracted all profile fields from ${file.name}!`, 'success');
 
-            // Populate form fields & switch to profile builder tab
+            // Populate form fields
             populateFormFromProfile(parsedProfile);
-            setMode('scratch');
 
-            // Immediately compile & display the PDF preview for the uploaded candidate
-            compileAndDisplayPdf(parsedProfile);
+            // Switch to Page 2 & compile PDF preview immediately
+            gotoPage(2);
 
         } catch (err) {
             console.error(err);
@@ -424,22 +443,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper: Compile & Display PDF
     async function compileAndDisplayPdf(profileData) {
-        btnGenerateScratch.disabled = true;
-        btnGenerateScratch.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Compiling PDF...`;
+        btnGenerate.disabled = true;
+        btnGenerate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Compiling PDF...`;
 
         try {
-            const payload = {
-                template_id: selectedTemplateId,
-                profile_data: profileData
-            };
+            const jd = jdInput ? jdInput.value.trim() : '';
+            let res, data;
 
-            const res = await fetch('/api/generate-from-scratch', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            if (jd) {
+                const payload = {
+                    job_description: jd,
+                    template_id: selectedTemplateId,
+                    model: modelSelect ? modelSelect.value : 'deepseek/deepseek-chat',
+                    profile_data: profileData
+                };
+                res = await fetch('/api/tailor-and-generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } else {
+                const payload = {
+                    template_id: selectedTemplateId,
+                    profile_data: profileData
+                };
+                res = await fetch('/api/generate-from-scratch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            }
 
-            const data = await res.json();
+            data = await res.json();
             if (!res.ok) throw new Error(data.detail || 'Compilation failed.');
 
             const pdfUrl = `${data.pdf_url}?t=${Date.now()}`;
@@ -458,16 +493,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Compilation Error:', err);
             showToast(err.message, 'error');
         } finally {
-            btnGenerateScratch.disabled = false;
-            btnGenerateScratch.innerHTML = `<i class="fa-solid fa-bolt-lightning"></i> Compile & Render PDF`;
+            btnGenerate.disabled = false;
+            btnGenerate.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Compile & Render PDF`;
         }
     }
-
-    // Generate Scratch PDF button listener
-    btnGenerateScratch.addEventListener('click', () => {
-        const currentProfile = collectProfileFromForm();
-        compileAndDisplayPdf(currentProfile);
-    });
 
     // Sample JDs
     const sampleJDs = {
@@ -486,50 +515,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Mode 1: AI Tailor & Generate PDF
-    btnGenerate.addEventListener('click', async () => {
-        const jd = jdInput.value.trim();
+    // Page 2: Compile Button
+    btnGenerate.addEventListener('click', () => {
         const currentProfile = collectProfileFromForm();
-
-        btnGenerate.disabled = true;
-        btnGenerate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Tailoring & Compiling PDF...`;
-
-        try {
-            const payload = {
-                job_description: jd,
-                template_id: selectedTemplateId,
-                model: modelSelect.value,
-                profile_data: currentProfile
-            };
-
-            const res = await fetch('/api/tailor-and-generate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.detail || 'Tailoring failed.');
-
-            const pdfUrl = `${data.pdf_url}?t=${Date.now()}`;
-            pdfFrame.src = pdfUrl;
-            pdfFrame.classList.remove('hidden');
-            pdfPlaceholder.classList.add('hidden');
-
-            latexCodeEditor.value = data.latex_code;
-            btnDownload.href = pdfUrl;
-            btnDownload.download = data.download_name || 'Tailored_Resume.pdf';
-            btnDownload.classList.remove('disabled');
-
-            showToast('Tailored 1-Page PDF Compiled Successfully!', 'success');
-
-        } catch (err) {
-            console.error('Generation Error:', err);
-            showToast(err.message, 'error');
-        } finally {
-            btnGenerate.disabled = false;
-            btnGenerate.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> AI Tailor & Compile PDF`;
-        }
+        compileAndDisplayPdf(currentProfile);
     });
 
     // Preview / Code Tabs
@@ -563,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => toast.classList.add('hidden'), 3500);
     }
 
-    // Initialize Default Empty Cards
+    // Initialize Default Cards & Templates
     addExperienceCard({});
     addProjectCard({});
     addEducationCard({});
