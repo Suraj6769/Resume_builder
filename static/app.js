@@ -209,13 +209,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mode 1: Tailor & Generate PDF
     btnGenerate.addEventListener('click', async () => {
         const jd = jdInput.value.trim();
-        if (!jd) {
-            showToast('Please enter a target Job Description!', 'error');
+        if (!jd && !parsedProfile) {
+            showToast('Please upload a resume file OR enter a target Job Description!', 'error');
             return;
         }
 
         btnGenerate.disabled = true;
-        btnGenerate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Tailoring & Compiling PDF...`;
+        btnGenerate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing & Compiling PDF...`;
 
         try {
             const payload = {

@@ -6,6 +6,7 @@ import uuid
 import json
 import requests
 import io
+
 try:
     import pdfplumber
 except ImportError:
@@ -15,6 +16,7 @@ try:
     import docx
 except ImportError:
     docx = None
+
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -35,13 +37,10 @@ from compile import (
     TEMPLATES_REGISTRY,
     BASE_LATEX_TEMPLATE, 
     BASE_LATEX_CODE, 
-    DEFAULT_SUMMARY_LATEX,
-    DEFAULT_SKILLS_LATEX,
-    DEFAULT_PROJECTS_LATEX, 
     compile_tex_string
 )
 
-app = FastAPI(title="Underleaf - DeepSeek AI Resume Tailor & Multi-Template Studio")
+app = FastAPI(title="Texora - Universal AI Resume Converter & Multi-Template Studio")
 
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "generated_pdfs")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -51,14 +50,14 @@ os.makedirs(STATIC_DIR, exist_ok=True)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 class TailorRequest(BaseModel):
-    job_description: str
-    template_id: Optional[str] = "jake_ryan"
+    job_description: Optional[str] = ""
+    template_id: Optional[str] = "suraj_template"
     openrouter_api_key: Optional[str] = None
     model: Optional[str] = "deepseek/deepseek-chat"
     profile_data: Optional[Dict[str, Any]] = None
 
 class ScratchRequest(BaseModel):
-    template_id: Optional[str] = "jake_ryan"
+    template_id: Optional[str] = "suraj_template"
     job_description: Optional[str] = ""
     openrouter_api_key: Optional[str] = None
     model: Optional[str] = "deepseek/deepseek-chat"
@@ -83,6 +82,8 @@ def cleanup_old_pdfs(max_age_seconds: int = 600, max_files: int = 5):
 
 def clean_latex_text(text: str) -> str:
     """Ensure percent signs and special chars in text are properly escaped for LaTeX."""
+    if text is None:
+        return ""
     text = str(text)
     text = re.sub(r'(?<!\\)%', r'\%', text)
     text = re.sub(r'(?<!\\)&', r'\&', text)
@@ -90,35 +91,69 @@ def clean_latex_text(text: str) -> str:
     return text
 
 def format_summary_to_latex(summary_str: str) -> str:
+    if not summary_str:
+        return ""
     return clean_latex_text(summary_str.strip())
 
-def format_skills_to_latex(skills_dict: dict, template_id: str = "jake_ryan") -> str:
+def format_skills_to_latex(skills_dict: Any, template_id: str = "jake_ryan") -> str:
+    if not skills_dict:
+        return ""
     if isinstance(skills_dict, str):
         return clean_latex_text(skills_dict)
+    if isinstance(skills_dict, list):
+        return clean_latex_text(", ".join([str(s) for s in skills_dict]))
         
-    domains = clean_latex_text(skills_dict.get("domains", "Financial Risk Modeling, Predictive Analytics, NLP, LLMs"))
-    languages = clean_latex_text(skills_dict.get("languages", "Python, R, SQL, SAS"))
-    libraries = clean_latex_text(skills_dict.get("libraries", "Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch, LangChain"))
-    tools = clean_latex_text(skills_dict.get("tools", "Power BI, Tableau, AWS, Streamlit, Git"))
-    
+    lines = []
+    if isinstance(skills_dict, dict):
+        domains = clean_latex_text(skills_dict.get("domains", ""))
+        languages = clean_latex_text(skills_dict.get("languages", ""))
+        libraries = clean_latex_text(skills_dict.get("libraries", ""))
+        tools = clean_latex_text(skills_dict.get("tools", ""))
+        
+        if domains: lines.append(f"\\textbf{{Core Competencies/Domains:}} {domains}")
+        if languages: lines.append(f"\\textbf{{Languages/Skills:}} {languages}")
+        if libraries: lines.append(f"\\textbf{{Frameworks/Methodologies:}} {libraries}")
+        if tools: lines.append(f"\\textbf{{Tools/Software:}} {tools}")
+        
+        if not lines:
+            for k, v in skills_dict.items():
+                if v and str(v).strip():
+                    lines.append(f"\\textbf{{{clean_latex_text(k.title())}:}} {clean_latex_text(str(v))}")
+                    
+    if not lines:
+        return ""
+
     if template_id == "jake_ryan":
-        return f"\\textbf{{Domains:}} {{{domains}}} \\\\ \n\\textbf{{Languages:}} {{{languages}}} \\\\ \n\\textbf{{Libraries/Frameworks:}} {{{libraries}}} \\\\ \n\\textbf{{Tools:}} {{{tools}}}"
+        return " \\\\ \n".join(lines)
     elif template_id == "deedy_resume":
-        return f"\\subsection*{{Domains}}\n{domains}\n\n\\subsection*{{Languages}}\n{languages}\n\n\\subsection*{{Libraries}}\n{libraries}\n\n\\subsection*{{Tools}}\n{tools}"
+        formatted_deedy = []
+        for l in lines:
+            parts = l.split(":", 1)
+            title = parts[0].replace("\\textbf{", "").replace("}", "").strip()
+            body = parts[1].strip() if len(parts) > 1 else ""
+            formatted_deedy.append(f"\\subsection*{{{title}}}\n{body}")
+        return "\n\n".join(formatted_deedy)
     else:
-        return f"\\textbf{{Domains:}} {domains} \\\\\n\\textbf{{Languages:}} {languages} \\\\\n\\textbf{{Libraries:}} {libraries} \\\\\n\\textbf{{Tools:}} {tools}"
+        return " \\\\\n".join(lines)
 
 def format_experience_to_latex(exp_data: list, template_id: str = "jake_ryan") -> str:
-    if not exp_data:
+    if not exp_data or not isinstance(exp_data, list):
         return ""
     blocks = []
     for exp in exp_data:
-        dates = clean_latex_text(exp.get("dates", "May 2026 -- Present"))
-        role = clean_latex_text(exp.get("role", "AI Engineer"))
-        company = clean_latex_text(exp.get("company", "PSS"))
-        loc = clean_latex_text(exp.get("location", "Mumbai, IN"))
-        bullets = exp.get("bullets", [])
-        
+        if not isinstance(exp, dict):
+            continue
+        dates = clean_latex_text(exp.get("dates", ""))
+        role = clean_latex_text(exp.get("role", exp.get("title", "")))
+        company = clean_latex_text(exp.get("company", exp.get("organization", "")))
+        loc = clean_latex_text(exp.get("location", ""))
+        bullets = exp.get("bullets", exp.get("highlights", []))
+        if isinstance(bullets, str):
+            bullets = [bullets]
+            
+        if not role and not company:
+            continue
+            
         if template_id == "jake_ryan":
             bullet_tex = "\n".join([f"        \\resumeItem{{{clean_latex_text(b)}}}" for b in bullets])
             block = f"""    \\resumeSubheading
@@ -163,17 +198,24 @@ def format_experience_to_latex(exp_data: list, template_id: str = "jake_ryan") -
     return "\n\n".join(blocks)
 
 def format_projects_to_latex(projects_data: list, template_id: str = "jake_ryan") -> str:
-    if not projects_data:
+    if not projects_data or not isinstance(projects_data, list):
         return ""
     blocks = []
-    for proj in projects_data[:3]:
-        year = clean_latex_text(proj.get("year", "2024"))
-        title = clean_latex_text(proj.get("title", "Data Science Project"))
-        bullets = proj.get("bullets", [])
-        
+    for proj in projects_data:
+        if not isinstance(proj, dict):
+            continue
+        year = clean_latex_text(proj.get("year", proj.get("date", "")))
+        title = clean_latex_text(proj.get("title", proj.get("name", "")))
+        bullets = proj.get("bullets", proj.get("highlights", []))
+        if isinstance(bullets, str):
+            bullets = [bullets]
+            
+        if not title:
+            continue
+            
         if template_id == "jake_ryan":
             bullet_items = []
-            for i, b in enumerate(bullets):
+            for b in bullets:
                 b_str = clean_latex_text(b)
                 if b_str.lower().startswith("impact:"):
                     b_str = b_str[7:].strip()
@@ -224,16 +266,21 @@ def format_projects_to_latex(projects_data: list, template_id: str = "jake_ryan"
     return "\n\n".join(blocks)
 
 def format_education_to_latex(edu_data: list, template_id: str = "jake_ryan") -> str:
-    if not edu_data:
+    if not edu_data or not isinstance(edu_data, list):
         return ""
     blocks = []
     for edu in edu_data:
-        year = clean_latex_text(edu.get("year", "May 2025"))
-        degree = clean_latex_text(edu.get("degree", "M.Sc. Statistics & Data Science"))
-        inst = clean_latex_text(edu.get("institution", "NMIMS Mumbai"))
-        loc = clean_latex_text(edu.get("location", "Mumbai, IN"))
-        detail = clean_latex_text(edu.get("detail", "CGPA: 3.67 / 4.0"))
+        if not isinstance(edu, dict):
+            continue
+        year = clean_latex_text(edu.get("year", edu.get("dates", "")))
+        degree = clean_latex_text(edu.get("degree", edu.get("title", "")))
+        inst = clean_latex_text(edu.get("institution", edu.get("school", "")))
+        loc = clean_latex_text(edu.get("location", ""))
+        detail = clean_latex_text(edu.get("detail", edu.get("gpa", "")))
         
+        if not degree and not inst:
+            continue
+            
         if template_id == "jake_ryan":
             block = f"""    \\resumeSubheading
       {{{inst}}}{{{loc}}}
@@ -264,9 +311,9 @@ def format_education_to_latex(edu_data: list, template_id: str = "jake_ryan") ->
     return "\n\n".join(blocks)
 
 def format_certifications_to_latex(certs_data: list) -> str:
-    if not certs_data:
+    if not certs_data or not isinstance(certs_data, list):
         return ""
-    return "\n".join([f"  \\item {clean_latex_text(c)}" for c in certs_data])
+    return "\n".join([f"  \\item {clean_latex_text(c)}" for c in certs_data if str(c).strip()])
 
 @app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 def read_root():
@@ -303,6 +350,8 @@ async def upload_resume(file: UploadFile = File(...), openrouter_api_key: Option
     extracted_text = ""
     
     if filename.endswith(".pdf"):
+        if pdfplumber is None:
+            raise HTTPException(status_code=500, detail="pdfplumber library is not installed.")
         try:
             with pdfplumber.open(io.BytesIO(content_bytes)) as pdf:
                 for page in pdf.pages:
@@ -310,6 +359,8 @@ async def upload_resume(file: UploadFile = File(...), openrouter_api_key: Option
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Failed to read PDF file: {str(e)}")
     elif filename.endswith(".docx") or filename.endswith(".doc"):
+        if docx is None:
+            raise HTTPException(status_code=500, detail="python-docx library is not installed.")
         try:
             doc = docx.Document(io.BytesIO(content_bytes))
             extracted_text = "\n".join([p.text for p in doc.paragraphs if p.text.strip()])
@@ -331,7 +382,9 @@ async def upload_resume(file: UploadFile = File(...), openrouter_api_key: Option
         raise HTTPException(status_code=400, detail="OpenRouter API Key is required for parsing uploaded resume.")
 
     prompt = (
-        "Extract structured JSON profile information from the raw resume text below.\n"
+        "You are a Universal Resume Parser. Extract structured candidate profile information from the raw resume text below.\n"
+        "This resume can belong to ANY candidate profession (Software Engineer, Data Scientist, Accountant, Nurse, Marketing Specialist, Civil Engineer, Manager, Designer, Lawyer, Tradesperson, etc.).\n"
+        "PRESERVE candidate's exact profession, true job titles, actual experience bullet points, achievements, project details, education, and keywords.\n\n"
         "OUTPUT FORMAT (STRICT JSON ONLY):\n"
         "{\n"
         '  "name": "Candidate Full Name",\n'
@@ -342,32 +395,34 @@ async def upload_resume(file: UploadFile = File(...), openrouter_api_key: Option
         '  "github": "https://github.com/username",\n'
         '  "summary": "Professional summary statement...",\n'
         '  "skills": {\n'
-        '    "domains": "Domain 1, Domain 2",\n'
-        '    "languages": "Python, SQL, R",\n'
-        '    "libraries": "Pandas, PyTorch, Scikit-learn",\n'
-        '    "tools": "AWS, Docker, Git"\n'
+        '    "domains": "Domain 1, Core Competencies",\n'
+        '    "languages": "Languages or Core Technical Skills",\n'
+        '    "libraries": "Frameworks, Methodologies, Systems",\n'
+        '    "tools": "Software, Cloud, Tools, Platforms"\n'
         '  },\n'
         '  "experience": [\n'
         '    {\n'
-        '      "dates": "May 2023 -- Present",\n'
-        '      "role": "Role Title",\n'
+        '      "dates": "Start Date -- End Date",\n'
+        '      "role": "Exact Job Title",\n'
         '      "company": "Company Name",\n'
-        '      "bullets": ["Achievement line 1", "Achievement line 2"]\n'
+        '      "location": "City, State/Country",\n'
+        '      "bullets": ["Achievement bullet point 1", "Achievement bullet point 2"]\n'
         '    }\n'
         '  ],\n'
         '  "projects": [\n'
         '    {\n'
-        '      "year": "2024",\n'
-        '      "title": "Project Title",\n'
-        '      "bullets": ["Project bullet 1", "Impact: Achieved 90% accuracy"]\n'
+        '      "year": "Year",\n'
+        '      "title": "Project Title / Accomplishment",\n'
+        '      "bullets": ["Project detail 1", "Project impact 2"]\n'
         '    }\n'
         '  ],\n'
         '  "education": [\n'
         '    {\n'
-        '      "year": "2023",\n'
-        '      "degree": "Degree Title",\n'
-        '      "institution": "University Name",\n'
-        '      "detail": "CGPA: 3.8 / 4.0"\n'
+        '      "year": "Graduation Year",\n'
+        '      "degree": "Degree / Qualification Title",\n'
+        '      "institution": "University / Institution Name",\n'
+        '      "location": "City, Country",\n'
+        '      "detail": "Honors / GPA / Key Coursework"\n'
         '    }\n'
         '  ],\n'
         '  "certifications": ["Certification 1", "Certification 2"]\n'
@@ -379,14 +434,14 @@ async def upload_resume(file: UploadFile = File(...), openrouter_api_key: Option
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
         "HTTP-Referer": "http://localhost:8050",
-        "X-Title": "Underleaf Resume Tailor"
+        "X-Title": "Texora Resume Parser"
     }
     
     payload = {
         "model": "deepseek/deepseek-chat",
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.1,
-        "max_tokens": 1600
+        "max_tokens": 1800
     }
     
     try:
@@ -404,22 +459,29 @@ async def upload_resume(file: UploadFile = File(...), openrouter_api_key: Option
 async def generate_from_scratch(req: ScratchRequest):
     cleanup_old_pdfs(max_age_seconds=300, max_files=3)
     
-    template_id = req.template_id if req.template_id in TEMPLATES_REGISTRY else "jake_ryan"
+    template_id = req.template_id if req.template_id in TEMPLATES_REGISTRY else "suraj_template"
     template_info = TEMPLATES_REGISTRY[template_id]
     latex_tmpl = template_info["latex_template"]
     
-    p = req.profile_data
-    name = clean_latex_text(p.get("name", "Suraj Vishwakarma"))
-    loc = clean_latex_text(p.get("location", "Dombivli, Mumbai"))
-    email = clean_latex_text(p.get("email", "suraj.v@example.com"))
-    phone = clean_latex_text(p.get("phone", "+91 98765 43210"))
-    linkedin = clean_latex_text(p.get("linkedin", "LinkedIn"))
-    github = clean_latex_text(p.get("github", "GitHub"))
+    p = req.profile_data or {}
+    name = clean_latex_text(p.get("name") or "Candidate Name")
+    loc = clean_latex_text(p.get("location") or "")
+    email = clean_latex_text(p.get("email") or "")
+    phone = clean_latex_text(p.get("phone") or "")
+    linkedin = clean_latex_text(p.get("linkedin") or "")
+    github = clean_latex_text(p.get("github") or "")
     
-    contact_line = f"{phone} $|$ \\href{{mailto:{email}}}{{\\underline{{{email}}}}} $|$ \\href{{{linkedin}}}{{\\underline{{linkedin.com}}}} $|$ \\href{{{github}}}{{\\underline{{github.com}}}}"
+    contact_parts = []
+    if loc: contact_parts.append(loc)
+    if email: contact_parts.append(f"\\href{{mailto:{email}}}{{\\underline{{{email}}}}}")
+    if phone: contact_parts.append(phone)
+    if linkedin: contact_parts.append(f"\\href{{{linkedin}}}{{\\underline{{LinkedIn}}}}")
+    if github: contact_parts.append(f"\\href{{{github}}}{{\\underline{{GitHub}}}}")
     
-    summary_tex = format_summary_to_latex(p.get("summary", DEFAULT_SUMMARY_LATEX))
-    skills_tex = format_skills_to_latex(p.get("skills", {}), template_id)
+    contact_line = " $|$ ".join(contact_parts) if contact_parts else "contact@example.com"
+    
+    summary_tex = format_summary_to_latex(p.get("summary") or "")
+    skills_tex = format_skills_to_latex(p.get("skills"), template_id)
     exp_tex = format_experience_to_latex(p.get("experience", []), template_id)
     projects_tex = format_projects_to_latex(p.get("projects", []), template_id)
     edu_tex = format_education_to_latex(p.get("education", []), template_id)
@@ -443,7 +505,7 @@ async def generate_from_scratch(req: ScratchRequest):
     pdf_path = os.path.join(OUTPUT_DIR, pdf_filename)
     tex_path = os.path.join(OUTPUT_DIR, f"resume_{req_id}.tex")
     
-    print(f"Compiling scratch resume using template '{template_id}'...")
+    print(f"Compiling resume for '{name}' using template '{template_id}'...")
     success, log_or_path = compile_tex_string(clean_latex, pdf_path, tex_path)
     if not success or not os.path.exists(pdf_path):
         raise HTTPException(status_code=500, detail=f"LaTeX compilation error: {log_or_path}")
@@ -460,113 +522,116 @@ async def generate_from_scratch(req: ScratchRequest):
 async def tailor_and_generate(req: TailorRequest):
     cleanup_old_pdfs(max_age_seconds=300, max_files=3)
     
-    jd_text = req.job_description.strip()
-    if not jd_text:
-        raise HTTPException(status_code=400, detail="Job description cannot be empty.")
-        
+    jd_text = (req.job_description or "").strip()
     api_key = req.openrouter_api_key or os.environ.get("OPENROUTER_API_KEY", "").strip()
-    if not api_key:
-        raise HTTPException(status_code=400, detail="OpenRouter API Key is missing. Please enter key or set OPENROUTER_API_KEY in .env.")
-        
     model_name = req.model or "deepseek/deepseek-chat"
-    template_id = req.template_id if req.template_id in TEMPLATES_REGISTRY else "jake_ryan"
+    template_id = req.template_id if req.template_id in TEMPLATES_REGISTRY else "suraj_template"
     template_info = TEMPLATES_REGISTRY[template_id]
     latex_tmpl = template_info["latex_template"]
     
     profile = req.profile_data or {}
-    cand_name = profile.get("name", "Suraj Vishwakarma")
+    cand_name = clean_latex_text(profile.get("name") or "Candidate Name")
     
-    system_prompt = (
-        f"You are an expert Quantitative AI & Data Science Resume Specialist for {cand_name}.\n"
-        "Given a target Job Description (JD), customize the candidate's resume in valid JSON format:\n"
-        "1. 'tailored_summary': Fine-tune ~10% of the summary to highlight key domain focus requested by the JD.\n"
-        "2. 'tailored_skills': Inject key skills/tools from the JD into domains, languages, libraries, and tools lists.\n"
-        "3. 'tailored_projects': Generate EXACTLY 3 high-impact academic/personal projects built around the skills required in the JD.\n\n"
-        "STRICT JSON OUTPUT FORMAT:\n"
-        "{\n"
-        "  \"tailored_summary\": \"Quantitative Data Scientist with a strong foundation in Statistics...\",\n"
-        "  \"tailored_skills\": {\n"
-        "    \"domains\": \"Financial Risk Modeling, Predictive Analytics, NLP, LLMs\",\n"
-        "    \"languages\": \"Python, R, SQL, SAS\",\n"
-        "    \"libraries\": \"Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch, LangChain\",\n"
-        "    \"tools\": \"Power BI, Tableau, AWS, Streamlit, Git\"\n"
-        "  },\n"
-        "  \"tailored_projects\": [\n"
-        "    {\n"
-        "      \"year\": \"2024\",\n"
-        "      \"title\": \"Project Name Matching JD Requirements\",\n"
-        "      \"bullets\": [\n"
-        "        \"Developed ML/AI pipeline using PyTorch/XGBoost/SQL targeting key JD skills.\",\n"
-        "        \"Applied quantitative techniques to process datasets.\",\n"
-        "        \"Impact: Achieved 91% accuracy, reducing financial risk by 15%.\"\n"
-        "      ]\n"
-        "    }\n"
-        "  ]\n"
-        "}\n\n"
-        "RULES:\n"
-        "1. Ensure JSON output is 100% valid.\n"
-        "2. Return ONLY the JSON object."
-    )
-    
-    user_prompt = f"TARGET JOB DESCRIPTION:\n{jd_text}\n\nGenerate the JSON output now:"
-    
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "http://localhost:8050",
-        "X-Title": "Underleaf Resume Tailor"
-    }
-    
-    payload = {
-        "model": model_name,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ],
-        "temperature": 0.2,
-        "max_tokens": 1600
-    }
-    
-    try:
-        print(f"Calling OpenRouter DeepSeek API with model {model_name}...")
-        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=25)
-        if response.status_code != 200:
-            err_msg = response.text
-            try:
-                err_msg = response.json().get("error", {}).get("message", response.text)
-            except Exception:
-                pass
-            raise HTTPException(status_code=response.status_code, detail=f"OpenRouter API Error: {err_msg}")
-            
-        res_data = response.json()
-        generated_content = res_data["choices"][0]["message"]["content"].strip()
-    except Exception as e:
-        if isinstance(e, HTTPException):
-            raise e
-        raise HTTPException(status_code=500, detail=f"OpenRouter API Exception: {str(e)}")
+    # AI Tailoring if JD and API Key are present
+    if jd_text and api_key:
+        system_prompt = (
+            f"You are a Universal Resume Tailor for candidate '{cand_name}'.\n"
+            "Given the candidate's actual current profile and a target Job Description (JD), optimize their resume in valid JSON:\n"
+            "1. 'tailored_summary': Refine candidate's professional summary to incorporate relevant target JD keywords.\n"
+            "2. 'tailored_skills': Retain candidate's actual skills and inject matching keywords from the JD.\n"
+            "3. 'tailored_experience': Refine candidate's actual work experience bullets to highlight achievements relevant to the JD.\n"
+            "4. 'tailored_projects': Refine candidate's actual projects or generate key project bullets matching candidate's background + JD requirements.\n\n"
+            "STRICT JSON OUTPUT FORMAT:\n"
+            "{\n"
+            "  \"tailored_summary\": \"...\",\n"
+            "  \"tailored_skills\": {\n"
+            "    \"domains\": \"...\",\n"
+            "    \"languages\": \"...\",\n"
+            "    \"libraries\": \"...\",\n"
+            "    \"tools\": \"...\"\n"
+            "  },\n"
+            "  \"tailored_experience\": [\n"
+            "    {\n"
+            "      \"dates\": \"...\",\n"
+            "      \"role\": \"...\",\n"
+            "      \"company\": \"...\",\n"
+            "      \"location\": \"...\",\n"
+            "      \"bullets\": [\"...\"]\n"
+            "    }\n"
+            "  ],\n"
+            "  \"tailored_projects\": [\n"
+            "    {\n"
+            "      \"year\": \"...\",\n"
+            "      \"title\": \"...\",\n"
+            "      \"bullets\": [\"...\"]\n"
+            "    }\n"
+            "  ]\n"
+            "}\n\n"
+            "RULES:\n"
+            "1. DO NOT change candidate's core profession or invent false titles.\n"
+            "2. Return ONLY valid JSON."
+        )
         
-    try:
-        json_match = re.search(r"\{.*\}", generated_content, re.DOTALL)
-        ai_data = json.loads(json_match.group(0)) if json_match else json.loads(generated_content)
+        user_prompt = f"CANDIDATE PROFILE:\n{json.dumps(profile, indent=2)}\n\nTARGET JOB DESCRIPTION:\n{jd_text}\n\nGenerate tailored JSON output:"
         
-        summary_tex = format_summary_to_latex(ai_data.get("tailored_summary", DEFAULT_SUMMARY_LATEX))
-        skills_tex = format_skills_to_latex(ai_data.get("tailored_skills", {}), template_id)
-        projects_tex = format_projects_to_latex(ai_data.get("tailored_projects", []), template_id)
-    except Exception as parse_err:
-        summary_tex = DEFAULT_SUMMARY_LATEX
-        skills_tex = format_skills_to_latex({}, template_id)
-        projects_tex = format_projects_to_latex([], template_id)
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "http://localhost:8050",
+            "X-Title": "Texora Resume Tailor"
+        }
         
-    name = clean_latex_text(profile.get("name", "Suraj Vishwakarma"))
-    loc = clean_latex_text(profile.get("location", "Dombivli, Mumbai"))
-    email = clean_latex_text(profile.get("email", "suraj.v@example.com"))
-    phone = clean_latex_text(profile.get("phone", "+91 98765 43210"))
-    linkedin = clean_latex_text(profile.get("linkedin", "LinkedIn"))
-    github = clean_latex_text(profile.get("github", "GitHub"))
+        payload = {
+            "model": model_name,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            "temperature": 0.2,
+            "max_tokens": 1800
+        }
+        
+        try:
+            print(f"Calling OpenRouter DeepSeek API to tailor resume for '{cand_name}'...")
+            response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=25)
+            if response.status_code == 200:
+                res_data = response.json()
+                generated_content = res_data["choices"][0]["message"]["content"].strip()
+                json_match = re.search(r"\{.*\}", generated_content, re.DOTALL)
+                ai_data = json.loads(json_match.group(0)) if json_match else json.loads(generated_content)
+                
+                if "tailored_summary" in ai_data:
+                    profile["summary"] = ai_data["tailored_summary"]
+                if "tailored_skills" in ai_data and ai_data["tailored_skills"]:
+                    profile["skills"] = ai_data["tailored_skills"]
+                if "tailored_experience" in ai_data and ai_data["tailored_experience"]:
+                    profile["experience"] = ai_data["tailored_experience"]
+                if "tailored_projects" in ai_data and ai_data["tailored_projects"]:
+                    profile["projects"] = ai_data["tailored_projects"]
+        except Exception as e:
+            print(f"Tailoring note: {e}")
+
+    # Generate LaTeX using candidate's profile (either AI-tailored or directly extracted)
+    name = clean_latex_text(profile.get("name") or "Candidate Name")
+    loc = clean_latex_text(profile.get("location") or "")
+    email = clean_latex_text(profile.get("email") or "")
+    phone = clean_latex_text(profile.get("phone") or "")
+    linkedin = clean_latex_text(profile.get("linkedin") or "")
+    github = clean_latex_text(profile.get("github") or "")
     
-    contact_line = f"{phone} $|$ \\href{{mailto:{email}}}{{\\underline{{{email}}}}} $|$ \\href{{{linkedin}}}{{\\underline{{linkedin.com}}}} $|$ \\href{{{github}}}{{\\underline{{github.com}}}}"
+    contact_parts = []
+    if loc: contact_parts.append(loc)
+    if email: contact_parts.append(f"\\href{{mailto:{email}}}{{\\underline{{{email}}}}}")
+    if phone: contact_parts.append(phone)
+    if linkedin: contact_parts.append(f"\\href{{{linkedin}}}{{\\underline{{LinkedIn}}}}")
+    if github: contact_parts.append(f"\\href{{{github}}}{{\\underline{{GitHub}}}}")
     
+    contact_line = " $|$ ".join(contact_parts) if contact_parts else "contact@example.com"
+    
+    summary_tex = format_summary_to_latex(profile.get("summary") or "")
+    skills_tex = format_skills_to_latex(profile.get("skills"), template_id)
     exp_tex = format_experience_to_latex(profile.get("experience", []), template_id)
+    projects_tex = format_projects_to_latex(profile.get("projects", []), template_id)
     edu_tex = format_education_to_latex(profile.get("education", []), template_id)
     certs_tex = format_certifications_to_latex(profile.get("certifications", []))
     
@@ -588,20 +653,17 @@ async def tailor_and_generate(req: TailorRequest):
     pdf_path = os.path.join(OUTPUT_DIR, pdf_filename)
     tex_path = os.path.join(OUTPUT_DIR, f"resume_{req_id}.tex")
     
-    print(f"Compiling tailored LaTeX using template '{template_id}'...")
+    print(f"Compiling resume for '{name}' using template '{template_id}'...")
     success, log_or_path = compile_tex_string(clean_latex, pdf_path, tex_path)
     
     if not success or not os.path.exists(pdf_path):
-        fallback_latex = BASE_LATEX_TEMPLATE.replace("{{SUMMARY_SECTION}}", DEFAULT_SUMMARY_LATEX).replace("{{SKILLS_SECTION}}", DEFAULT_SKILLS_LATEX).replace("{{PROJECTS_SECTION}}", DEFAULT_PROJECTS_LATEX).replace("{{NAME}}", "Suraj Vishwakarma").replace("{{CONTACT_LINE}}", contact_line).replace("{{EXPERIENCE_SECTION}}", "").replace("{{EDUCATION_SECTION}}", "").replace("{{CERTIFICATIONS_SECTION}}", "")
-        fallback_success, _ = compile_tex_string(fallback_latex, pdf_path, tex_path)
-        if not fallback_success:
-            raise HTTPException(status_code=500, detail=f"LaTeX compilation error: {log_or_path}")
+        raise HTTPException(status_code=500, detail=f"LaTeX compilation error: {log_or_path}")
             
     return {
         "status": "success",
         "pdf_id": req_id,
         "pdf_url": f"/api/pdf/{req_id}",
-        "download_name": f"{name.replace(' ', '_')}_Tailored_Resume.pdf",
+        "download_name": f"{name.replace(' ', '_')}_Resume.pdf",
         "latex_code": clean_latex
     }
 
@@ -612,11 +674,12 @@ def serve_pdf(pdf_id: str):
         return FileResponse(
             pdf_path, 
             media_type="application/pdf", 
-            filename="Suraj_Vishwakarma_Resume.pdf",
-            headers={"Content-Disposition": "inline; filename=Suraj_Vishwakarma_Resume.pdf"}
+            filename="Resume.pdf",
+            headers={"Content-Disposition": "inline; filename=Resume.pdf"}
         )
     raise HTTPException(status_code=404, detail="PDF not found.")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8050)
+    port = int(os.environ.get("PORT", 8050))
+    uvicorn.run(app, host="0.0.0.0", port=port)
