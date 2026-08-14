@@ -9,6 +9,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const tailorInputCard = document.getElementById('tailorInputCard');
     const scratchInputCard = document.getElementById('scratchInputCard');
     
+    // Form Tabs Elements
+    const formTabs = document.querySelectorAll('.form-tab');
+    const formTabContents = document.querySelectorAll('.form-tab-content');
+
+    // Dynamic Lists Containers
+    const expContainer = document.getElementById('expContainer');
+    const projectsContainer = document.getElementById('projectsContainer');
+    const eduContainer = document.getElementById('eduContainer');
+    const btnAddExp = document.getElementById('btnAddExp');
+    const btnAddProject = document.getElementById('btnAddProject');
+    const btnAddEdu = document.getElementById('btnAddEdu');
+    
     // Upload Dropzone Elements
     const resumeDropZone = document.getElementById('resumeDropZone');
     const resumeFileInput = document.getElementById('resumeFileInput');
@@ -36,9 +48,229 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Application State
     let selectedTemplateId = 'suraj_template';
-    let currentMode = 'tailor';
+    let currentMode = 'scratch';
     let parsedProfile = null;
     let allTemplates = [];
+
+    // Form Tab Switching
+    formTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            formTabs.forEach(t => t.classList.remove('active'));
+            formTabContents.forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            const targetId = tab.getAttribute('data-tab');
+            document.getElementById(targetId).classList.add('active');
+        });
+    });
+
+    // Dynamic Card Builders
+    btnAddExp.addEventListener('click', () => addExperienceCard({}));
+    btnAddProject.addEventListener('click', () => addProjectCard({}));
+    btnAddEdu.addEventListener('click', () => addEducationCard({}));
+
+    function addExperienceCard(data = {}) {
+        const card = document.createElement('div');
+        card.className = 'dynamic-card exp-card';
+        const bulletsText = Array.isArray(data.bullets) ? data.bullets.join('\n') : (data.bullets || '');
+        card.innerHTML = `
+            <button type="button" class="card-remove-btn"><i class="fa-solid fa-xmark"></i></button>
+            <div class="scratch-form-grid">
+                <div class="form-field">
+                    <label>Role / Job Title</label>
+                    <input type="text" class="exp-role" value="${data.role || data.title || ''}" placeholder="e.g. Senior Software Engineer">
+                </div>
+                <div class="form-field">
+                    <label>Company / Organization</label>
+                    <input type="text" class="exp-company" value="${data.company || data.organization || ''}" placeholder="e.g. Google">
+                </div>
+                <div class="form-field">
+                    <label>Location</label>
+                    <input type="text" class="exp-loc" value="${data.location || ''}" placeholder="e.g. Mountain View, CA">
+                </div>
+                <div class="form-field">
+                    <label>Dates</label>
+                    <input type="text" class="exp-dates" value="${data.dates || ''}" placeholder="e.g. Jan 2022 -- Present">
+                </div>
+                <div class="form-field full-width">
+                    <label>Key Bullet Points (One per line)</label>
+                    <textarea class="exp-bullets" rows="3" placeholder="Led a team of 5 engineers...\nImproved system latency by 35%...">${bulletsText}</textarea>
+                </div>
+            </div>
+        `;
+        card.querySelector('.card-remove-btn').addEventListener('click', () => card.remove());
+        expContainer.appendChild(card);
+    }
+
+    function addProjectCard(data = {}) {
+        const card = document.createElement('div');
+        card.className = 'dynamic-card proj-card';
+        const bulletsText = Array.isArray(data.bullets) ? data.bullets.join('\n') : (data.bullets || '');
+        card.innerHTML = `
+            <button type="button" class="card-remove-btn"><i class="fa-solid fa-xmark"></i></button>
+            <div class="scratch-form-grid">
+                <div class="form-field">
+                    <label>Project Title</label>
+                    <input type="text" class="proj-title" value="${data.title || data.name || ''}" placeholder="e.g. Real-Time Analytics Pipeline">
+                </div>
+                <div class="form-field">
+                    <label>Year / Dates</label>
+                    <input type="text" class="proj-year" value="${data.year || data.dates || ''}" placeholder="e.g. 2024">
+                </div>
+                <div class="form-field full-width">
+                    <label>Project Details / Impact (One per line)</label>
+                    <textarea class="proj-bullets" rows="3" placeholder="Architected distributed Kafka pipeline...\nImpact: Processed 1M+ events/sec.">${bulletsText}</textarea>
+                </div>
+            </div>
+        `;
+        card.querySelector('.card-remove-btn').addEventListener('click', () => card.remove());
+        projectsContainer.appendChild(card);
+    }
+
+    function addEducationCard(data = {}) {
+        const card = document.createElement('div');
+        card.className = 'dynamic-card edu-card';
+        card.innerHTML = `
+            <button type="button" class="card-remove-btn"><i class="fa-solid fa-xmark"></i></button>
+            <div class="scratch-form-grid">
+                <div class="form-field">
+                    <label>Degree / Field of Study</label>
+                    <input type="text" class="edu-degree" value="${data.degree || data.title || ''}" placeholder="e.g. B.S. in Computer Science">
+                </div>
+                <div class="form-field">
+                    <label>University / Institution</label>
+                    <input type="text" class="edu-inst" value="${data.institution || data.school || ''}" placeholder="e.g. Stanford University">
+                </div>
+                <div class="form-field">
+                    <label>Location</label>
+                    <input type="text" class="edu-loc" value="${data.location || ''}" placeholder="e.g. Stanford, CA">
+                </div>
+                <div class="form-field">
+                    <label>Graduation Year</label>
+                    <input type="text" class="edu-year" value="${data.year || data.dates || ''}" placeholder="e.g. 2023">
+                </div>
+                <div class="form-field full-width">
+                    <label>Details / GPA / Coursework</label>
+                    <input type="text" class="edu-detail" value="${data.detail || data.gpa || ''}" placeholder="e.g. GPA: 3.9 / 4.0, Honors">
+                </div>
+            </div>
+        `;
+        card.querySelector('.card-remove-btn').addEventListener('click', () => card.remove());
+        eduContainer.appendChild(card);
+    }
+
+    // Populate Entire Form from Extracted JSON Profile
+    function populateFormFromProfile(p) {
+        if (!p) return;
+        
+        if (p.name) document.getElementById('scratchName').value = p.name;
+        if (p.location) document.getElementById('scratchLoc').value = p.location;
+        if (p.email) document.getElementById('scratchEmail').value = p.email;
+        if (p.phone) document.getElementById('scratchPhone').value = p.phone;
+        if (p.linkedin) document.getElementById('scratchLinkedin').value = p.linkedin;
+        if (p.github) document.getElementById('scratchGithub').value = p.github;
+        if (p.summary) document.getElementById('scratchSummary').value = p.summary;
+        
+        if (p.skills) {
+            if (typeof p.skills === 'object') {
+                document.getElementById('skillDomains').value = p.skills.domains || '';
+                document.getElementById('skillLanguages').value = p.skills.languages || '';
+                document.getElementById('skillLibraries').value = p.skills.libraries || '';
+                document.getElementById('skillTools').value = p.skills.tools || '';
+            } else {
+                document.getElementById('skillDomains').value = String(p.skills);
+            }
+        }
+        
+        // Experience entries
+        expContainer.innerHTML = '';
+        if (Array.isArray(p.experience) && p.experience.length) {
+            p.experience.forEach(exp => addExperienceCard(exp));
+        } else {
+            addExperienceCard({});
+        }
+
+        // Projects entries
+        projectsContainer.innerHTML = '';
+        if (Array.isArray(p.projects) && p.projects.length) {
+            p.projects.forEach(proj => addProjectCard(proj));
+        } else {
+            addProjectCard({});
+        }
+
+        // Education entries
+        eduContainer.innerHTML = '';
+        if (Array.isArray(p.education) && p.education.length) {
+            p.education.forEach(edu => addEducationCard(edu));
+        } else {
+            addEducationCard({});
+        }
+
+        // Certifications
+        if (Array.isArray(p.certifications)) {
+            document.getElementById('scratchCerts').value = p.certifications.join('\n');
+        } else if (p.certifications) {
+            document.getElementById('scratchCerts').value = String(p.certifications);
+        }
+    }
+
+    // Collect Current Profile Data from Form
+    function collectProfileFromForm() {
+        const expItems = [];
+        document.querySelectorAll('.exp-card').forEach(card => {
+            const role = card.querySelector('.exp-role').value.trim();
+            const company = card.querySelector('.exp-company').value.trim();
+            const location = card.querySelector('.exp-loc').value.trim();
+            const dates = card.querySelector('.exp-dates').value.trim();
+            const bulletsRaw = card.querySelector('.exp-bullets').value.split('\n').map(b => b.trim()).filter(Boolean);
+            if (role || company) {
+                expItems.push({ role, company, location, dates, bullets: bulletsRaw });
+            }
+        });
+
+        const projItems = [];
+        document.querySelectorAll('.proj-card').forEach(card => {
+            const title = card.querySelector('.proj-title').value.trim();
+            const year = card.querySelector('.proj-year').value.trim();
+            const bulletsRaw = card.querySelector('.proj-bullets').value.split('\n').map(b => b.trim()).filter(Boolean);
+            if (title) {
+                projItems.push({ title, year, bullets: bulletsRaw });
+            }
+        });
+
+        const eduItems = [];
+        document.querySelectorAll('.edu-card').forEach(card => {
+            const degree = card.querySelector('.edu-degree').value.trim();
+            const institution = card.querySelector('.edu-inst').value.trim();
+            const location = card.querySelector('.edu-loc').value.trim();
+            const year = card.querySelector('.edu-year').value.trim();
+            const detail = card.querySelector('.edu-detail').value.trim();
+            if (degree || institution) {
+                eduItems.push({ degree, institution, location, year, detail });
+            }
+        });
+
+        const certsRaw = document.getElementById('scratchCerts').value.split('\n').map(c => c.trim()).filter(Boolean);
+
+        return {
+            name: document.getElementById('scratchName').value.trim(),
+            location: document.getElementById('scratchLoc').value.trim(),
+            email: document.getElementById('scratchEmail').value.trim(),
+            phone: document.getElementById('scratchPhone').value.trim(),
+            linkedin: document.getElementById('scratchLinkedin').value.trim(),
+            github: document.getElementById('scratchGithub').value.trim(),
+            summary: document.getElementById('scratchSummary').value.trim(),
+            skills: {
+                domains: document.getElementById('skillDomains').value.trim(),
+                languages: document.getElementById('skillLanguages').value.trim(),
+                libraries: document.getElementById('skillLibraries').value.trim(),
+                tools: document.getElementById('skillTools').value.trim()
+            },
+            experience: expItems,
+            projects: projItems,
+            education: eduItems,
+            certifications: certsRaw
+        };
+    }
 
     // Mode Switching
     modeTailorBtn.addEventListener('click', () => setMode('tailor'));
@@ -49,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnBuildAiHero.addEventListener('click', () => {
-        setMode('tailor');
+        setMode('scratch');
         document.getElementById('studioSection').scrollIntoView({ behavior: 'smooth' });
     });
 
@@ -174,13 +406,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             parsedProfile = data.profile;
             resumeFileInfo.textContent = `✓ Parsed "${file.name}" (${data.profile.name || 'Candidate'})`;
-            showToast(`Resume text parsed successfully!`, 'success');
+            showToast(`Extracted all profile fields from ${file.name}!`, 'success');
 
-            if (parsedProfile.name) document.getElementById('scratchName').value = parsedProfile.name;
-            if (parsedProfile.location) document.getElementById('scratchLoc').value = parsedProfile.location;
-            if (parsedProfile.email) document.getElementById('scratchEmail').value = parsedProfile.email;
-            if (parsedProfile.phone) document.getElementById('scratchPhone').value = parsedProfile.phone;
-            if (parsedProfile.summary) document.getElementById('scratchSummary').value = parsedProfile.summary;
+            // Populate form fields & switch to profile builder tab
+            populateFormFromProfile(parsedProfile);
+            setMode('scratch');
+
+            // Immediately compile & display the PDF preview for the uploaded candidate
+            compileAndDisplayPdf(parsedProfile);
 
         } catch (err) {
             console.error(err);
@@ -188,6 +421,53 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast(err.message, 'error');
         }
     }
+
+    // Helper: Compile & Display PDF
+    async function compileAndDisplayPdf(profileData) {
+        btnGenerateScratch.disabled = true;
+        btnGenerateScratch.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Compiling PDF...`;
+
+        try {
+            const payload = {
+                template_id: selectedTemplateId,
+                profile_data: profileData
+            };
+
+            const res = await fetch('/api/generate-from-scratch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || 'Compilation failed.');
+
+            const pdfUrl = `${data.pdf_url}?t=${Date.now()}`;
+            pdfFrame.src = pdfUrl;
+            pdfFrame.classList.remove('hidden');
+            pdfPlaceholder.classList.add('hidden');
+
+            latexCodeEditor.value = data.latex_code;
+            btnDownload.href = pdfUrl;
+            btnDownload.download = data.download_name || 'Resume.pdf';
+            btnDownload.classList.remove('disabled');
+
+            showToast('Resume PDF Compiled Successfully!', 'success');
+
+        } catch (err) {
+            console.error('Compilation Error:', err);
+            showToast(err.message, 'error');
+        } finally {
+            btnGenerateScratch.disabled = false;
+            btnGenerateScratch.innerHTML = `<i class="fa-solid fa-bolt-lightning"></i> Compile & Render PDF`;
+        }
+    }
+
+    // Generate Scratch PDF button listener
+    btnGenerateScratch.addEventListener('click', () => {
+        const currentProfile = collectProfileFromForm();
+        compileAndDisplayPdf(currentProfile);
+    });
 
     // Sample JDs
     const sampleJDs = {
@@ -206,23 +486,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Mode 1: Tailor & Generate PDF
+    // Mode 1: AI Tailor & Generate PDF
     btnGenerate.addEventListener('click', async () => {
         const jd = jdInput.value.trim();
-        if (!jd && !parsedProfile) {
-            showToast('Please upload a resume file OR enter a target Job Description!', 'error');
-            return;
-        }
+        const currentProfile = collectProfileFromForm();
 
         btnGenerate.disabled = true;
-        btnGenerate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing & Compiling PDF...`;
+        btnGenerate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Tailoring & Compiling PDF...`;
 
         try {
             const payload = {
                 job_description: jd,
                 template_id: selectedTemplateId,
                 model: modelSelect.value,
-                profile_data: parsedProfile
+                profile_data: currentProfile
             };
 
             const res = await fetch('/api/tailor-and-generate', {
@@ -251,91 +528,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast(err.message, 'error');
         } finally {
             btnGenerate.disabled = false;
-            btnGenerate.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Generate & Compile PDF`;
-        }
-    });
-
-    // Mode 2: Generate Scratch PDF
-    btnGenerateScratch.addEventListener('click', async () => {
-        btnGenerateScratch.disabled = true;
-        btnGenerateScratch.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Compiling PDF...`;
-
-        try {
-            const profile = {
-                name: document.getElementById('scratchName').value.trim(),
-                location: document.getElementById('scratchLoc').value.trim(),
-                email: document.getElementById('scratchEmail').value.trim(),
-                phone: document.getElementById('scratchPhone').value.trim(),
-                summary: document.getElementById('scratchSummary').value.trim(),
-                skills: {
-                    domains: 'Financial Risk Modeling, Predictive Analytics, NLP, LLMs',
-                    languages: 'Python, R, SQL, SAS',
-                    libraries: 'Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch, LangChain',
-                    tools: 'Power BI, Tableau, AWS, Streamlit, Git'
-                },
-                experience: [
-                    {
-                        dates: 'May 2026 -- Present',
-                        role: 'AI Engineer',
-                        company: 'PSS',
-                        bullets: [
-                            'Leveraged GenAI to optimize recruitment finance, reducing manual screening costs.',
-                            'Built an LLM-based resume recommendation system improving hiring pipeline velocity by 20%.'
-                        ]
-                    }
-                ],
-                projects: [
-                    {
-                        year: '2024',
-                        title: 'Credit Risk Modeling & Loan Default Prediction',
-                        bullets: [
-                            'Built an end-to-end ML pipeline (XGBoost, Random Forest) to predict borrower default probability.',
-                            'Impact: Achieved 89% AUC-ROC, potential to reduce NPL ratios by 15%.'
-                        ]
-                    }
-                ],
-                education: [
-                    {
-                        year: 'May 2025',
-                        degree: 'M.Sc. Statistics & Data Science',
-                        institution: 'NMIMS Mumbai',
-                        detail: 'CGPA: 3.67 / 4.0'
-                    }
-                ]
-            };
-
-            const payload = {
-                template_id: selectedTemplateId,
-                profile_data: profile
-            };
-
-            const res = await fetch('/api/generate-from-scratch', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.detail || 'Build from scratch failed.');
-
-            const pdfUrl = `${data.pdf_url}?t=${Date.now()}`;
-            pdfFrame.src = pdfUrl;
-            pdfFrame.classList.remove('hidden');
-            pdfPlaceholder.classList.add('hidden');
-
-            latexCodeEditor.value = data.latex_code;
-            btnDownload.href = pdfUrl;
-            btnDownload.download = data.download_name || 'Compiled_Resume.pdf';
-            btnDownload.classList.remove('disabled');
-
-            showToast('Resume PDF Compiled Successfully!', 'success');
-
-        } catch (err) {
-            console.error('Scratch Build Error:', err);
-            showToast(err.message, 'error');
-        } finally {
-            btnGenerateScratch.disabled = false;
-            btnGenerateScratch.innerHTML = `<i class="fa-solid fa-bolt-lightning"></i> Build & Compile PDF`;
+            btnGenerate.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> AI Tailor & Compile PDF`;
         }
     });
 
@@ -370,6 +563,9 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => toast.classList.add('hidden'), 3500);
     }
 
-    // Initialize
+    // Initialize Default Empty Cards
+    addExperienceCard({});
+    addProjectCard({});
+    addEducationCard({});
     loadTemplates();
 });

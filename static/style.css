@@ -586,9 +586,9 @@ body {
 
 .workspace-grid {
     display: grid;
-    grid-template-columns: 480px 1fr;
+    grid-template-columns: 520px 1fr;
     gap: 1.5rem;
-    height: 780px;
+    min-height: 840px;
 }
 
 .workspace-panel {
@@ -656,7 +656,141 @@ body {
     margin-top: 2px;
 }
 
-/* Form Inputs */
+/* Form Tabs & Field Grid */
+.form-tabs-bar {
+    display: flex;
+    gap: 4px;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    overflow-x: auto;
+}
+
+.form-tab {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.form-tab.active {
+    background: #ffffff;
+    color: var(--purple-main);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.form-tab-content {
+    display: none;
+}
+
+.form-tab-content.active {
+    display: block;
+}
+
+.scratch-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-field.full-width {
+    grid-column: span 2;
+}
+
+.form-field label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 3px;
+}
+
+.form-field input, .form-field textarea {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    padding: 8px;
+    font-family: inherit;
+    font-size: 0.82rem;
+    outline: none;
+}
+
+.form-field input:focus, .form-field textarea:focus {
+    border-color: var(--purple-main);
+}
+
+/* Dynamic Cards for Experience, Projects, Education */
+.dynamic-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.dynamic-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    padding: 10px;
+    position: relative;
+}
+
+.card-remove-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #fee2e2;
+    color: #ef4444;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    cursor: pointer;
+}
+
+.card-remove-btn:hover {
+    background: #fca5a5;
+}
+
+.btn-add-card {
+    width: 100%;
+    background: var(--purple-light);
+    color: var(--purple-text);
+    border: 1px dashed var(--purple-main);
+    padding: 8px;
+    border-radius: var(--radius-md);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-add-card:hover {
+    background: #e9d5ff;
+}
+
+.margin-top-12 { margin-top: 12px; }
+.margin-top-16 { margin-top: 16px; }
+
+/* Job Description & Generate Button */
 #jdInput {
     width: 100%;
     height: 140px;
@@ -718,44 +852,6 @@ body {
 
 .btn-generate-purple:hover {
     background: var(--purple-hover);
-}
-
-/* Scratch Form Grid */
-.scratch-form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 12px;
-}
-
-.form-field {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-field.full-width {
-    grid-column: span 2;
-}
-
-.form-field label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 3px;
-}
-
-.form-field input, .form-field textarea {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: var(--radius-md);
-    padding: 8px;
-    font-family: inherit;
-    font-size: 0.82rem;
-    outline: none;
-}
-
-.form-field input:focus, .form-field textarea:focus {
-    border-color: var(--purple-main);
 }
 
 /* Preview Panel */

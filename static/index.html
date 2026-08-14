@@ -52,7 +52,7 @@
                     <span class="purple-gradient">Made Simple.</span>
                 </h1>
                 <p class="hero-subtitle">
-                    Create ATS-friendly LaTeX resumes in minutes — no coding, no hassle. Choose a template, fill in your details, and download a beautiful, professional resume.
+                    Create ATS-friendly LaTeX resumes in minutes — no coding, no hassle. Choose a template, fill in your details, or upload your existing resume to instantly generate a beautiful, professional PDF.
                 </p>
 
                 <div class="hero-cta-group">
@@ -74,7 +74,7 @@
                         <div class="feat-icon"><i class="fa-solid fa-bolt"></i></div>
                         <div>
                             <div class="feat-title">AI-Powered</div>
-                            <div class="feat-desc">Smart content suggestions</div>
+                            <div class="feat-desc">Auto-extract & smart suggestions</div>
                         </div>
                     </div>
 
@@ -156,14 +156,14 @@
         <section class="section-container" id="studioSection">
             <div class="section-center-meta">
                 <span class="pill-meta">Workspace Studio</span>
-                <h2 class="section-title-large">AI Resume Generator & Tailor</h2>
+                <h2 class="section-title-large">Universal AI Resume Studio</h2>
                 <p class="section-subtitle-text">Selected Template: <strong id="activeTemplateName" class="text-purple">Suraj Executive (Detailed)</strong></p>
             </div>
 
             <div class="studio-mode-bar">
                 <div class="mode-pills-purple">
-                    <button class="mode-pill active" id="modeTailorBtn"><i class="fa-solid fa-bullseye"></i> Tailor to Job Description</button>
-                    <button class="mode-pill" id="modeScratchBtn"><i class="fa-solid fa-pen-to-square"></i> Build from Scratch</button>
+                    <button class="mode-pill active" id="modeScratchBtn"><i class="fa-solid fa-pen-to-square"></i> Comprehensive Profile Builder</button>
+                    <button class="mode-pill" id="modeTailorBtn"><i class="fa-solid fa-bullseye"></i> AI Tailor to Job Description</button>
                 </div>
             </div>
 
@@ -174,17 +174,115 @@
                     
                     <!-- Upload Resume Box -->
                     <div class="panel-card upload-card">
-                        <div class="card-title"><i class="fa-solid fa-cloud-arrow-up text-purple"></i> Upload Existing Resume (Optional)</div>
+                        <div class="card-title"><i class="fa-solid fa-cloud-arrow-up text-purple"></i> Upload Existing Resume (Auto-Extract All Fields)</div>
                         <div class="dropzone" id="resumeDropZone">
                             <i class="fa-solid fa-file-arrow-up dropzone-icon"></i>
                             <div class="dropzone-text">Drag & drop your <strong>PDF, DOCX, or TEX</strong> file here</div>
-                            <div class="dropzone-hint" id="resumeFileInfo">Supports .pdf, .docx, .tex (DeepSeek auto-extracts your text)</div>
+                            <div class="dropzone-hint" id="resumeFileInfo">DeepSeek extracts all fields (Contact, Skills, Experience, Projects, Education, Certs)</div>
                             <input type="file" id="resumeFileInput" accept=".pdf,.docx,.doc,.tex,.txt" hidden>
                         </div>
                     </div>
 
+                    <!-- Comprehensive Profile Form (Scratch & Extracted Editor) -->
+                    <div class="panel-card" id="scratchInputCard">
+                        <div class="card-title"><i class="fa-solid fa-user-pen text-purple"></i> Candidate Profile Details</div>
+                        
+                        <!-- Form Section Accordion/Tabs -->
+                        <div class="form-tabs-bar">
+                            <button class="form-tab active" data-tab="tab-contact">Contact & Summary</button>
+                            <button class="form-tab" data-tab="tab-skills">Skills & Tools</button>
+                            <button class="form-tab" data-tab="tab-exp">Work Experience</button>
+                            <button class="form-tab" data-tab="tab-projects">Projects</button>
+                            <button class="form-tab" data-tab="tab-edu">Education & Certs</button>
+                        </div>
+
+                        <div class="form-tab-content active" id="tab-contact">
+                            <div class="scratch-form-grid">
+                                <div class="form-field">
+                                    <label>Full Name *</label>
+                                    <input type="text" id="scratchName" placeholder="e.g. Suraj Vishwakarma">
+                                </div>
+                                <div class="form-field">
+                                    <label>Location</label>
+                                    <input type="text" id="scratchLoc" placeholder="e.g. Mumbai, India">
+                                </div>
+                                <div class="form-field">
+                                    <label>Email *</label>
+                                    <input type="email" id="scratchEmail" placeholder="e.g. suraj.v@example.com">
+                                </div>
+                                <div class="form-field">
+                                    <label>Phone *</label>
+                                    <input type="text" id="scratchPhone" placeholder="e.g. +91 98765 43210">
+                                </div>
+                                <div class="form-field">
+                                    <label>LinkedIn URL</label>
+                                    <input type="text" id="scratchLinkedin" placeholder="e.g. https://linkedin.com/in/surajv">
+                                </div>
+                                <div class="form-field">
+                                    <label>GitHub / Portfolio URL</label>
+                                    <input type="text" id="scratchGithub" placeholder="e.g. https://github.com/surajv">
+                                </div>
+                                <div class="form-field full-width">
+                                    <label>Professional Summary</label>
+                                    <textarea id="scratchSummary" rows="3" placeholder="Brief summary of your professional background and core strengths..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-tab-content" id="tab-skills">
+                            <div class="scratch-form-grid">
+                                <div class="form-field full-width">
+                                    <label>Core Domains / Competencies</label>
+                                    <input type="text" id="skillDomains" placeholder="e.g. Machine Learning, Financial Modeling, Cloud Architecture">
+                                </div>
+                                <div class="form-field full-width">
+                                    <label>Languages / Core Skills</label>
+                                    <input type="text" id="skillLanguages" placeholder="e.g. Python, R, SQL, Java, C++">
+                                </div>
+                                <div class="form-field full-width">
+                                    <label>Frameworks / Libraries / Systems</label>
+                                    <input type="text" id="skillLibraries" placeholder="e.g. PyTorch, TensorFlow, Scikit-learn, React, FastAPI">
+                                </div>
+                                <div class="form-field full-width">
+                                    <label>Tools / Software / Cloud</label>
+                                    <input type="text" id="skillTools" placeholder="e.g. AWS, Docker, Git, Tableau, Power BI">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-tab-content" id="tab-exp">
+                            <div id="expContainer" class="dynamic-cards-list">
+                                <!-- Experience cards added dynamically -->
+                            </div>
+                            <button type="button" class="btn-add-card" id="btnAddExp"><i class="fa-solid fa-plus"></i> Add Work Experience Entry</button>
+                        </div>
+
+                        <div class="form-tab-content" id="tab-projects">
+                            <div id="projectsContainer" class="dynamic-cards-list">
+                                <!-- Project cards added dynamically -->
+                            </div>
+                            <button type="button" class="btn-add-card" id="btnAddProject"><i class="fa-solid fa-plus"></i> Add Project Entry</button>
+                        </div>
+
+                        <div class="form-tab-content" id="tab-edu">
+                            <div id="eduContainer" class="dynamic-cards-list">
+                                <!-- Education cards added dynamically -->
+                            </div>
+                            <button type="button" class="btn-add-card" id="btnAddEdu"><i class="fa-solid fa-plus"></i> Add Education Entry</button>
+
+                            <div class="form-field full-width margin-top-12">
+                                <label>Certifications & Licenses (Comma or Line Separated)</label>
+                                <textarea id="scratchCerts" rows="2" placeholder="e.g. AWS Certified Solutions Architect, CFA Level 1"></textarea>
+                            </div>
+                        </div>
+
+                        <button class="btn-generate-purple margin-top-16" id="btnGenerateScratch">
+                            <i class="fa-solid fa-bolt-lightning"></i> Compile & Render PDF
+                        </button>
+                    </div>
+
                     <!-- Job Description Panel (Tailor Mode) -->
-                    <div class="panel-card" id="tailorInputCard">
+                    <div class="panel-card hidden" id="tailorInputCard">
                         <div class="card-title-row">
                             <div class="card-title"><i class="fa-solid fa-briefcase text-purple"></i> Target Job Description</div>
                             <input type="hidden" id="modelSelect" value="deepseek/deepseek-chat">
@@ -200,39 +298,7 @@
                         </div>
 
                         <button class="btn-generate-purple" id="btnGenerate">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate & Compile PDF
-                        </button>
-                    </div>
-
-                    <!-- Scratch Profile Form (Scratch Mode) -->
-                    <div class="panel-card hidden" id="scratchInputCard">
-                        <div class="card-title"><i class="fa-solid fa-user-pen text-purple"></i> Scratch Profile Information</div>
-                        
-                        <div class="scratch-form-grid">
-                            <div class="form-field">
-                                <label>Full Name</label>
-                                <input type="text" id="scratchName" value="Suraj Vishwakarma">
-                            </div>
-                            <div class="form-field">
-                                <label>Location</label>
-                                <input type="text" id="scratchLoc" value="Dombivli, Mumbai">
-                            </div>
-                            <div class="form-field">
-                                <label>Email</label>
-                                <input type="email" id="scratchEmail" value="suraj.v@example.com">
-                            </div>
-                            <div class="form-field">
-                                <label>Phone</label>
-                                <input type="text" id="scratchPhone" value="+91 98765 43210">
-                            </div>
-                            <div class="form-field full-width">
-                                <label>Summary</label>
-                                <textarea id="scratchSummary" rows="3">Quantitative Data Scientist with a strong foundation in Statistics and Financial Risk Modeling. Experienced in predictive modeling, loss estimation, and generative AI systems.</textarea>
-                            </div>
-                        </div>
-
-                        <button class="btn-generate-purple" id="btnGenerateScratch">
-                            <i class="fa-solid fa-bolt-lightning"></i> Build & Compile PDF
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI Tailor & Compile PDF
                         </button>
                     </div>
 
@@ -257,7 +323,7 @@
                         <div class="preview-placeholder" id="pdfPlaceholder">
                             <div class="placeholder-icon"><i class="fa-regular fa-file-pdf"></i></div>
                             <h3>Your Compiled 1-Page PDF Preview Will Render Here</h3>
-                            <p>Choose a template from above, enter your profile or Job Description, and click <strong>Generate</strong>.</p>
+                            <p>Upload a resume file or fill in your profile details above, then click <strong>Compile & Render PDF</strong>.</p>
                         </div>
 
                         <iframe id="pdfFrame" class="hidden" src="" frameborder="0"></iframe>
